@@ -1,0 +1,4774 @@
+# A Feast for Crows Events
+
+namespace = feast_for_crows
+
+###Dany Quest feast_for_crows.50
+
+#Stannis Event
+narrative_event = {
+	id = feast_for_crows.1
+	desc = "EVTDESCfeast_for_crows.1"
+	title = "EVTTITLEfeast_for_crows.1"
+	picture = GFX_evt_the_wall
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		d_nightswatch = { 
+			holder_scope = {
+				if = {
+					limit = { 
+						current_heir = {
+							OR = {
+								trait = maester
+								trait = septon
+							}
+						}
+					}
+					current_heir = {
+						c_the_citadel = {
+							holder_scope = { reverse_banish = PREVPREV }
+						}
+						add_trait = dead_target
+						set_character_flag = nw_banished_heir
+						recalc_succession = yes
+					}		
+				}	
+			}	
+		}	
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.1" #offer to make Jon Lord of Winterfell
+		ai_chance = { factor = 96 }
+		d_nightswatch = { 
+			holder_scope = {
+				character_event = { id = feast_for_crows.2 days = 7 tooltip = TOOLTIPfeast_for_crows.2 }
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTBfeast_for_crows.1" #No
+		ai_chance = { factor = 2 }
+		hidden_tooltip = { 
+			dead_target = {
+				limit = { has_character_flag = nw_banished_heir }
+				d_nightswatch = {
+					holder_scope = { reverse_banish = PREVPREV }
+				}
+				clr_character_flag = nw_banished_heir
+				remove_trait = dead_target
+			}
+		}
+	}
+}
+
+#Jon responds to offer
+character_event = {
+	id = feast_for_crows.2
+	desc = "EVTDESCfeast_for_crows.2"
+	picture = GFX_evt_the_wall
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		hidden_tooltip = {
+			any_playable_ruler = {
+				limit = {
+					capital_scope = { region = world_north }
+				}
+				any_demesne_title = {
+					limit = { 
+						OR = {
+							tier = COUNT
+							tier = DUKE
+						}
+					}				
+					set_variable = { which = "de_facto_kingdom" value = 2 } 
+				}
+			}
+		}		
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.2" #No
+		ai_chance = { factor = 90 }
+		FROM = {
+			character_event = { id = feast_for_crows.3 tooltip = TOOLTIPfeast_for_crows.3 }
+		}
+		hidden_tooltip = { 
+			dead_target = {
+				limit = { has_character_flag = nw_banished_heir }
+				d_nightswatch = {
+					holder_scope = { reverse_banish = PREVPREV }
+				}
+				clr_character_flag = nw_banished_heir
+				remove_trait = dead_target
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTBfeast_for_crows.2" #Yes
+		ai_chance = { factor = 10 }
+		set_character_flag = jons_claim_on_winterfell
+		set_character_flag = against_king
+		hidden_tooltip = { activate_title = { title = d_deep_lake status = yes } }
+		d_deep_lake = { gain_title = ROOT }
+		# hidden_tooltip = {
+			# 17 = {
+				# build_holding = {
+				   # title = b_deep_lake
+				   # type = castle
+				   # holder = ROOT
+				# }
+			# }
+		# }	
+		current_heir = {
+			d_nightswatch = { gain_title = PREV }
+			hidden_tooltip = { 
+				d_the_wall = { gain_title = PREV }
+				c_castle_black = { gain_title = PREV } 			
+				c_new_gift = { gain_title = PREV }
+				c_brandons_gift = { gain_title = PREV }	
+				b_castle_black = { PREV = { capital = PREV } }
+			}
+		}
+		remove_trait = nightswatch
+		remove_trait = bastard
+		add_trait = legit_bastard
+		if = {
+			limit = {
+				has_nickname = nick_snow
+			}
+			remove_nickname = yes
+		}
+		piety = -100
+		if = {
+			limit = { ai = yes }
+			add_trait = forbid_marriage
+		}		
+		set_defacto_liege = FROM
+		hidden_tooltip = { 
+			k_north = {
+				add_pressed_claim = ROOT
+			}
+			d_winterfell = {
+				add_pressed_claim = ROOT
+			}
+			c_winterfell = {
+				add_pressed_claim = ROOT
+			}
+			d_deep_lake = { 
+				succession = primogeniture 
+				add_law = feudal_contract_2
+			}
+			recalc_succession = yes
+			any_courtier = {
+				limit = { 
+					trait = nightswatch 
+					NOT = { character = ROOT }
+					NOT = { demesne_size = 1 }
+				}
+				d_nightswatch = {
+					holder_scope = { reverse_banish = PREVPREV }
+				}
+			}
+			dead_target = {
+				limit = { has_character_flag = nw_banished_heir }
+				d_nightswatch = {
+					holder_scope = { reverse_banish = PREVPREV }
+				}
+				clr_character_flag = nw_banished_heir
+				remove_trait = dead_target
+			}
+			character_event = { id = feast_for_crows.200 days = 3 }
+		}
+		FROM = {
+			character_event = { id = feast_for_crows.4 tooltip = TOOLTIPfeast_for_crows.4 }
+		}
+	}
+}
+#Inform Stannis reject
+character_event = {
+	id = feast_for_crows.3
+	desc = "EVTDESCfeast_for_crows.3"
+	picture = GFX_STARK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.3" 
+		hidden_tooltip = { FROM = { character_event = { id = feast_for_crows.202 days = 2 } } }
+	}
+}
+#Inform Stannis Accept
+character_event = {
+	id = feast_for_crows.4
+	desc = "EVTDESCfeast_for_crows.4"
+	picture = GFX_STARK
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		d_nightswatch = { remove_claim = FROM }
+		c_castle_black = { remove_claim = FROM }
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.4" 
+		custom_tooltip = { text = CUSTOMTOOLTIPfeast_for_crows.4 }
+		hidden_tooltip = {
+			any_playable_ruler = {
+				limit = {
+					NOT = { character = FROM }
+					NOT = { character = ROOT }
+					OR = {
+						has_landed_title = e_iron_throne
+						war_with = ROOT
+						capital_scope = { region = world_north }
+					}
+				}
+				character_event = { id = feast_for_crows.5 days = 5 }
+                character_event = { id = feast_for_crows.299 days = 7}
+			}
+			if = {
+				limit = {
+					any_courtier = {
+						has_character_flag = val_wildling
+						is_married = no
+						is_betrothed = no
+					}
+				}
+				FROM = { character_event = { id = feast_for_crows.201 } }
+			}
+		}
+	}
+}
+#Inform Lords of Jon Snow claims Winterfell
+character_event = {
+	id = feast_for_crows.5
+	desc = "EVTDESCfeast_for_crows.5"
+	picture = GFX_STARK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.5" #Traitor
+		trigger = {
+			NOT = { k_north = { holder_scope = { war_with = ROOT } } }
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 10
+				OR = {
+					has_landed_title = d_barrowlands
+					has_landed_title = d_rills
+				}	
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTBfeast_for_crows.5" #Follow Jon
+		trigger = {
+			OR = {
+				liege = { has_landed_title = k_north }
+				liege = { has_landed_title = d_winterfell }
+				AND = {
+					independent = yes
+					primary_title = { is_variable_equal = { which = "de_facto_kingdom" value = 2 } } #north				
+				}	
+			}
+			NOT = {
+				OR = {
+					has_landed_title = k_north
+					has_landed_title = e_iron_throne
+					has_landed_title = d_winterfell
+					k_north = { holder_scope = { war_with = ROOT } }
+				}
+			}	
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.25
+				any_dynasty_member = {
+					is_close_relative = ROOT
+					prisoner = yes
+					host = { 
+						OR = {
+							has_landed_title = e_iron_throne
+							has_character_flag = supporting_king
+						}
+					}
+				}
+			}
+			modifier = {
+				factor = 10
+				OR = {
+					has_landed_title = d_whiteharbor
+					culture = crannogman
+				}	
+			}
+		}	
+		set_defacto_liege = ROOT
+		k_stormlands = {
+			holder_scope = { 
+				ROOT = {
+					join_attacker_wars = PREV
+				}
+			}
+		}
+		clr_character_flag = neutral
+		clr_character_flag = supporting_king
+		set_character_flag = against_king
+		set_character_flag = against_loyal_liege
+		k_north = {
+			holder_scope = { 
+				opinion = {
+					modifier = opinion_traitor
+					who = ROOT
+				}
+				hidden_tooltip = { character_event = { id = mega_wars.36 } }
+			}
+		}
+		e_iron_throne = {
+			holder_scope = { 
+				opinion = {
+					modifier = opinion_joined_rebellion
+					who = ROOT
+					years = 20
+				}
+				opinion = {
+					modifier = opinion_traitor
+					who = ROOT
+				}
+			}
+		}	
+		hidden_tooltip = {
+			k_stormlands = {
+				holder_scope = { 
+					letter_event = { id = mega_wars.31 }
+					reverse_opinion = {
+						modifier = opinion_with_rebel_leader
+						who = ROOT
+						years = 100
+					}
+				}
+			}
+		}
+        d_deep_lake = { 
+            holder_scope = {
+                character_event = { id = feast_for_crows.299 days = 7 tooltip = TOOLTIPfeast_for_crows.200 }
+            }
+        }
+	}
+	option = {
+		name = "EVTOPTCfeast_for_crows.5" #OK
+		trigger = {
+			NOT = {
+				OR = {
+					liege = { has_landed_title = k_north }
+					liege = { has_landed_title = d_winterfell }
+					AND = {
+						independent = yes
+						primary_title = { is_variable_equal = { which = "de_facto_kingdom" value = 2 } } #north
+					}	
+					has_landed_title = e_iron_throne
+					has_landed_title = d_winterfell
+					has_landed_title = k_north
+				}
+			}	
+		}
+	}
+	option = {
+		name = "EVTOPTDfeast_for_crows.5" #OK
+		trigger = {
+			k_north = { holder_scope = { war_with = ROOT } }	
+		}
+	}
+}
+#Troops for Jon!
+character_event = {
+	id = feast_for_crows.200
+	desc = "EVTDESCfeast_for_crows.200"
+	picture = GFX_STARK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.200" #No
+		k_stormlands = {
+			holder_scope = {
+				ROOT = {
+					join_attacker_wars = PREV
+				}
+			}
+		}
+		spawn_unit = {
+			province = 17 #Castle Black
+			home = 17 #Castle Black
+			scaled_by_biggest_garrison = 0.4
+			owner = ROOT
+			troops = {
+				archers = { 100 100 }
+				heavy_infantry = { 100 100 }
+				light_infantry = { 300 300 }	
+				light_cavalry = { 0 0 }		
+				knights = { 0 0 }						
+			}
+			attrition = 1.0
+		}
+		create_random_soldier = {
+			random_traits = yes
+			dynasty = NONE
+			female = no
+			culture = wildling
+			religion = beyond_wall_old_gods
+		}
+		new_character = {
+			remove_trait = inbred
+			remove_trait = imbecile
+			remove_trait = infirm
+			remove_trait = incapable
+			remove_trait = dwarf
+			remove_trait = hunchback
+			remove_trait = clubfooted
+			remove_trait = weak
+			random_list = {
+				30 = { add_trait = poor_warrior }
+				60 = { add_trait = trained_warrior }
+				10 = { add_trait = skilled_warrior }
+			}
+		}
+		create_random_soldier = {
+			random_traits = yes
+			dynasty = NONE
+			female = no
+			culture = wildling
+			religion = beyond_wall_old_gods
+		}
+		new_character = {
+			remove_trait = inbred
+			remove_trait = imbecile
+			remove_trait = infirm
+			remove_trait = incapable
+			remove_trait = dwarf
+			remove_trait = hunchback
+			remove_trait = clubfooted
+			remove_trait = weak
+			random_list = {
+				30 = { add_trait = poor_warrior }
+				60 = { add_trait = trained_warrior }
+				10 = { add_trait = skilled_warrior }
+			}
+		}	
+		create_random_soldier = {
+			random_traits = yes
+			dynasty = NONE
+			female = no
+			culture = wildling
+			religion = beyond_wall_old_gods
+		}
+		new_character = {
+			remove_trait = inbred
+			remove_trait = imbecile
+			remove_trait = infirm
+			remove_trait = incapable
+			remove_trait = dwarf
+			remove_trait = hunchback
+			remove_trait = clubfooted
+			remove_trait = weak
+			random_list = {
+				30 = { add_trait = poor_warrior }
+				60 = { add_trait = trained_warrior }
+				10 = { add_trait = skilled_warrior }
+			}
+		}	
+		create_random_soldier = {
+			random_traits = yes
+			dynasty = NONE
+			female = no
+			culture = northman
+			religion = old_gods
+		}
+		new_character = {
+			remove_trait = inbred
+			remove_trait = imbecile
+			remove_trait = infirm
+			remove_trait = incapable
+			remove_trait = dwarf
+			remove_trait = hunchback
+			remove_trait = clubfooted
+			remove_trait = weak
+			random_list = {
+				30 = { add_trait = poor_warrior }
+				60 = { add_trait = trained_warrior }
+				10 = { add_trait = skilled_warrior }
+			}
+		}	
+		create_random_soldier = {
+			random_traits = yes
+			dynasty = NONE
+			female = no
+			culture = northman
+			religion = old_gods
+		}
+		new_character = {
+			remove_trait = inbred
+			remove_trait = imbecile
+			remove_trait = infirm
+			remove_trait = incapable
+			remove_trait = dwarf
+			remove_trait = hunchback
+			remove_trait = clubfooted
+			remove_trait = weak
+			random_list = {
+				30 = { add_trait = poor_warrior }
+				60 = { add_trait = trained_warrior }
+				10 = { add_trait = skilled_warrior }
+			}
+		}			
+	}
+}
+## Added by seanr707
+#Troops for Jon! (from supporting lords)
+character_event = {
+    id = feast_for_crows.299
+    desc = "EVTDESCfeast_for_crows.299"
+    picture = GFX_STARK
+    
+    is_triggered_only = yes
+    
+    option = {
+        name = "EVTOPTAfeast_for_crows.299" #Lords donate troops
+        spawn_unit = {
+            province = 17 #Castle Black
+            home = 17 #Castle Black
+            scaled_by_biggest_garrison = 0.4
+            owner = ROOT
+            troops = {
+                archers = { 0 0 }
+                heavy_infantry = { 0 0 }
+                light_infantry = { 500 500 }    
+                light_cavalry = { 0 0 }     
+                knights = { 0 0 }                       
+            }
+            attrition = 1.0
+        }
+        create_random_soldier = {
+            random_traits = yes
+            dynasty = NONE
+            female = no
+            culture = northman
+            religion = old_gods
+        }
+        new_character = {
+            remove_trait = inbred
+            remove_trait = imbecile
+            remove_trait = infirm
+            remove_trait = incapable
+            remove_trait = dwarf
+            remove_trait = hunchback
+            remove_trait = clubfooted
+            remove_trait = weak
+            random_list = {
+                30 = { add_trait = poor_warrior }
+                60 = { add_trait = trained_warrior }
+                10 = AND = {
+                    add_trait = skilled_warrior
+                    add_trait = strong
+                }
+            }
+        }
+        create_random_soldier = {
+            random_traits = yes
+            dynasty = NONE
+            female = no
+            culture = northman
+            religion = old_gods
+        }
+        new_character = {
+            remove_trait = inbred
+            remove_trait = imbecile
+            remove_trait = infirm
+            remove_trait = incapable
+            remove_trait = dwarf
+            remove_trait = hunchback
+            remove_trait = clubfooted
+            remove_trait = weak
+            random_list = {
+                30 = { add_trait = poor_warrior }
+                60 = { add_trait = trained_warrior }
+                10 = { add_trait = skilled_warrior }
+            }
+        }   
+        create_random_soldier = {
+            random_traits = yes
+            dynasty = NONE
+            female = no
+            culture = northman
+            religion = old_gods
+        }
+        new_character = {
+            remove_trait = inbred
+            remove_trait = imbecile
+            remove_trait = infirm
+            remove_trait = incapable
+            remove_trait = dwarf
+            remove_trait = hunchback
+            remove_trait = clubfooted
+            remove_trait = weak
+            random_list = {
+                30 = { add_trait = poor_warrior }
+                60 = { add_trait = trained_warrior }
+                10 = { add_trait = skilled_warrior }
+            }
+        }              
+    }
+}
+
+#Jon marry Val?
+character_event = {
+	id = feast_for_crows.201
+	desc = "EVTDESCfeast_for_crows.201"
+	picture = GFX_STARK
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		FROM = {
+			any_courtier = {
+				has_character_flag = val_wildling
+				is_married = no
+				is_betrothed = no
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.201" #Yes
+		ai_chance = { factor = 45 }
+		if = {
+			limit = { ai = yes }
+			remove_trait = forbid_marriage
+		}
+		set_character_flag = keep_lowborn_marriage
+		FROM = {
+			random_courtier = {
+				limit = {
+					has_character_flag = val_wildling
+					is_married = no
+					is_betrothed = no
+				}
+				prisoner = no
+				add_spouse = ROOT	
+				clr_character_flag = val_wildling
+				clr_character_flag = captured_in_battle
+			}
+		}	
+	}	
+	
+	option = {
+		name = "EVTOPTBfeast_for_crows.201" #No
+		ai_chance = { factor = 45 }
+		FROM = {
+			random_courtier = {
+				limit = { has_character_flag = val_wildling }
+				clr_character_flag = val_wildling
+			}
+		}
+	}
+## Added by seanr707
+    option = {
+        name = "EVTOPTCfeast_for_crows.201" #Asha Greyjoy
+        ai_chance = { factor = 10 }
+        if = {
+            limit = { ai = yes }
+            remove_trait = forbid_marriage
+        }
+        set_character_flag = keep_lowborn_marriage
+        FROM = {
+            any_courtier = {
+                limit = {
+                    character = 7107
+                }
+                prisoner = no
+                remove_spouse = 205081092
+                add_spouse = ROOT 
+                remove_character_modifier = house_arrest
+            }
+        }
+    }
+}	
+#Jon swap babies?
+character_event = {
+	id = feast_for_crows.202
+	desc = "EVTDESCfeast_for_crows.202"
+	picture = GFX_STARK
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		FROM = {
+			any_courtier = {
+				character = 57050 #Wildling Prince
+				is_alive = yes
+			}
+		}
+		any_courtier = {
+			character = 574369 #Gilly's son
+			is_alive = yes
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.202" #Yes
+		ai_chance = { factor = 100 }
+		random_courtier = {
+			limit = { character = 1296 }
+			hidden_tooltip = {
+				random_courtier = {
+					limit = { character = 574368 }
+					add_lover = PREV
+				}
+			}
+			c_the_citadel = {
+				holder_scope = {
+					reverse_banish = PREVPREV
+				}
+			}
+			add_character_modifier = {
+				name = maester_education
+				duration = -1
+			}						
+		}		
+		FROM = {
+			random_courtier = {
+				limit = { character = 57050 } #Wildling Prince
+				character_event = { id = feast_for_crows.203 tooltip = TOOLTIPfeast_for_crows.203 }
+			}
+		}
+		random_courtier = {
+			limit = { character = 574369 } #Gilly's son
+			mother = {
+				add_trait = depressed
+			}
+			character_event = { id = feast_for_crows.204 tooltip = TOOLTIPfeast_for_crows.204 }
+		}		
+		random_courtier = {
+			limit = { character = 77142 }
+			c_the_citadel = {
+				holder_scope = {
+					reverse_banish = PREVPREV
+				}
+			}		
+		}
+	}	
+	
+	option = {
+		name = "EVTOPTBfeast_for_crows.202" #No
+		ai_chance = { factor = 0 }
+	}	
+}	
+character_event = { #move wildling prince
+	id = feast_for_crows.203
+	
+	is_triggered_only = yes
+	hide_window = yes
+	
+	immediate = {
+		FROM = { #Set gilly as mother
+			random_courtier = {
+				limit = { character = 574368 } 
+				ROOT = {
+					set_mother = PREV
+				}
+			}
+		}
+		prisoner = no
+		clr_character_flag = captured_in_battle
+		add_trait = bastard
+		give_nickname = nick_snow
+		c_horn_hill = { 
+			holder_scope = { 
+				ROOT = { #Move him and gilly to hornhill
+					move_character = PREV 
+					mother = { move_character = PREVPREV }
+				} 
+				random_dynasty_member = { #Set sam as father
+					limit = { character = 1296 }
+					ROOT = {
+						set_father = PREV
+						dynasty = PREV
+					}
+				}
+			} 
+		}
+		FROMFROM = { #set mance as real father
+			random_courtier = {
+				limit = { character = 174347 }
+				ROOT = { set_real_father = PREV }
+			}
+		}
+		k_beyond_wall = { remove_claim = ROOT }
+	}
+	
+	option = {
+		name = OK
+	}
+}	
+character_event = { #move gillys child
+	id = feast_for_crows.204
+	
+	is_triggered_only = yes
+	hide_window = yes
+	
+	immediate = {
+		FROMFROM = { #Set mance and dalla as parents and move to stannis
+			random_courtier = {
+				limit = { character = 174347 }
+				ROOT = { 
+					set_father = PREV 
+					dynasty = PREV
+				}
+				spouse_even_if_dead = { ROOT = { set_mother = PREV } }
+			}
+			ROOT = { move_character = PREV imprison = PREV }
+		}
+		c_horn_hill = { #Set Craster as real father
+			holder_scope = { 
+				random_courtier = {
+					limit = { character = 574368 }
+					father_even_if_dead = { ROOT = { set_real_father = PREV } }
+				}
+			}	
+		}
+		k_beyond_wall = { add_pressed_claim = ROOT }
+		c_crasters_keep = { remove_claim = ROOT }
+		set_character_flag = captured_in_battle
+	}
+	
+	option = {
+		name = OK
+	}
+}	
+#Davos finds Rickon
+character_event  = {
+	id = feast_for_crows.6
+	desc = "EVTDESCfeast_for_crows.6"
+	picture = GFX_evt_rickon
+	
+	capable_only = yes
+	only_men = yes
+	prisoner = no
+	
+	trigger = {
+		character = 1019110
+		liege = {
+			war = yes
+			dynasty = 317
+			has_character_flag = war_for_the_north
+		}
+		d_whiteharbor = {
+			holder_scope = {
+				dynasty = 80
+				prisoner = no
+				NOT = { trait = incapable }
+			}
+		}
+		dead_target = {
+			is_alive = yes
+			character = 9269059
+			NOT = { has_character_flag = stark_child_found }
+			NOT = { dynasty = 59 }
+		}
+	}
+	
+	mean_time_to_happen = { 
+		years = 6 
+		modifier = {
+			factor = 0.5
+			year = 8302
+		}
+		modifier = {
+			factor = 0.5
+			year = 8304
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.6" #OK	
+		prestige = 100
+		#prisoner = no
+		remove_trait = has_missing
+		dead_target = {
+			limit = {
+				is_alive = yes
+				character = 9269059
+				NOT = { has_character_flag = stark_child_found }
+				NOT = { dynasty = 59 }
+			}
+			character_event = { id = feast_for_crows.7 tooltip = TOOLTIPfeast_for_crows.7 } 
+		}
+	}	
+	
+}	
+
+#Inform Rickon
+character_event = {
+	id = feast_for_crows.7
+	desc = "EVTDESCfeast_for_crows.7"
+	picture = GFX_evt_rickon
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		character = 9269059
+	}
+	
+	option = {
+		name = "EVTOPTCfeast_for_crows.7" #OK	
+		dead_target = {
+			limit = { 
+				character = 59
+			}	
+			ROOT = {
+				set_father = PREV
+				dynasty = PREV
+			}
+			spouse_even_if_dead = {
+				ROOT = {
+					set_mother = PREV
+				}
+			}
+		}
+		recalc_succession = yes
+		has_missing = {
+			limit = { character = 9059 }
+			add_trait = dead_target 
+		}
+		create_character = {
+			female = yes
+			dynasty = random
+			age = 25
+		}
+		new_character = {
+			has_missing = { 
+				limit = { trait = dead_target  }
+				set_mother = PREV 
+				dynasty = PREV 
+			}
+			death = yes
+		}
+		create_character = {
+			female = no
+			dynasty = random
+			age = 25
+		}
+		new_character = {
+			has_missing = { 
+				limit = { trait = dead_target  }
+				set_father = PREV 
+				remove_trait = has_missing
+				remove_trait = dead_target 
+			}
+			death = yes
+		}
+		k_north = {
+			add_pressed_claim = ROOT
+		}
+		d_winterfell = {
+			add_pressed_claim = ROOT
+		}
+		c_winterfell = {
+			add_pressed_claim = ROOT
+		}
+		add_weak_claim = k_riverlands
+		set_character_flag = rickons_claim_on_winterfell
+		set_character_flag = stark_child_found
+		d_whiteharbor = {
+			holder_scope = {
+				character_event = { id = feast_for_crows.8 }
+			}
+		}
+		character_event = { id = dynastic_rivalry.8 days = 1 }
+	}	
+}	
+#Inform Manderly
+character_event = {
+	id = feast_for_crows.8
+	desc = "EVTDESCfeast_for_crows.8"
+	picture = GFX_evt_rickon
+	
+	show_from_from = yes
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		FROM = { character = 9269059 }
+	}
+	
+	immediate = {
+		FROM = { FROM = { prisoner = no } }
+		reverse_banish = FROM
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.8" #Fight for my liege Lord!
+		trigger = {
+			NOT = { k_north = { holder_scope = { war_with = ROOT } } }
+		}
+		set_defacto_liege = ROOT
+		k_north = {
+			holder_scope = { 
+				random_current_enemy = {
+					limit = {
+						dynasty = 317
+						has_character_flag = war_for_the_north
+					}
+					ROOT = {
+						join_attacker_wars = PREV
+					}
+					if = {
+						limit = { NOT = { tier = EMPEROR } }
+						ROOT = {
+							clr_character_flag = neutral
+							clr_character_flag = supporting_king
+							set_character_flag = against_king
+							set_character_flag = against_loyal_liege
+						}	
+						e_iron_throne = {
+							holder_scope = { 
+								opinion = {
+									modifier = opinion_joined_rebellion
+									who = ROOT
+									years = 20
+								}
+								opinion = {
+									modifier = opinion_traitor
+									who = ROOT
+								}
+							}
+						}	
+						hidden_tooltip = {
+							reverse_opinion = {
+								modifier = opinion_with_rebel_leader
+								who = ROOT
+								years = 100
+							}
+						}
+					}
+					if = {
+						limit = { tier = EMPEROR }
+						ROOT = {
+							clr_character_flag = neutral
+							set_character_flag = supporting_king
+							clr_character_flag = against_king
+						}
+						hidden_tooltip = {
+							reverse_opinion = {
+								modifier = opinion_with_king
+								who = ROOT
+								years = 100
+							}
+						}
+					}
+					hidden_tooltip = {
+						character_event = { id = feast_for_crows.9 }
+					}
+				}	
+			}
+		}	
+		k_north = {
+			holder_scope = { 
+				opinion = {
+					modifier = opinion_traitor
+					who = ROOT
+				}
+				hidden_tooltip = { character_event = { id = mega_wars.36 } }
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTAfeast_for_crows.8" #Already at war
+		trigger = {
+			k_north = { holder_scope = { war_with = ROOT } } 
+		}
+		hidden_tooltip = {
+			k_north = {
+				holder_scope = { 
+					random_current_enemy = {
+						limit = {
+							dynasty = 317
+							has_character_flag = war_for_the_north
+						}
+						character_event = { id = feast_for_crows.9 }
+					}
+				}	
+			}
+		}
+	}
+}	
+#Inform Stannis Rickon found
+character_event = {
+	id = feast_for_crows.9
+	desc = "EVTDESCfeast_for_crows.9"
+	picture = GFX_evt_rickon
+	
+	is_triggered_only = yes
+	
+	show_from_from = yes
+	
+	immediate = {
+		FROM = {
+			opinion = {
+				who = ROOT
+				modifier = opinion_found_liege_lord
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.4" 
+		trigger = {
+			NOT = { any_realm_character = { has_character_flag = jons_claim_on_winterfell } }
+		}
+		custom_tooltip = { text = CUSTOMTOOLTIPfeast_for_crows.9 }
+		FROM = { FROM = { tooltip = { } } }
+		hidden_tooltip = {
+			any_playable_ruler = {
+				limit = {
+					NOT = { character = FROM }
+					NOT = { character = ROOT }
+					OR = {
+						has_landed_title = e_iron_throne
+						war_with = ROOT
+						capital_scope = { region = world_north }
+					}
+				}
+				character_event = { id = feast_for_crows.10 days = 5 }
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTBfeast_for_crows.9" 
+		trigger = {
+			any_realm_character = { has_character_flag = jons_claim_on_winterfell } 
+		}
+		any_playable_ruler = {
+			limit = {
+				NOT = { character = FROM }
+				NOT = { character = ROOT }
+				capital_scope = { region = world_north }
+				NOT = { has_landed_title = d_winterfell }
+				NOT = { war_with = ROOT }
+			}
+			opinion = {
+				who = ROOT
+				modifier = opinion_found_liege_lord
+			}
+		}
+	}
+}
+#Inform Lords of Rickon found
+character_event = {
+	id = feast_for_crows.10
+	desc = "EVTDESCfeast_for_crows.10"
+	picture = GFX_evt_rickon
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.10" #Traitor
+		trigger = { NOT = { k_north = { holder_scope = { war_with = ROOT } } } }	
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 10
+				OR = {
+					has_landed_title = d_barrowlands
+					has_landed_title = d_rills
+				}	
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTBfeast_for_crows.5" #Follow Rickon
+		trigger = {
+			OR = {
+				liege = { has_landed_title = k_north }
+				liege = { has_landed_title = d_winterfell }
+				AND = {
+					independent = yes
+					primary_title = { is_variable_equal = { which = "de_facto_kingdom" value = 2 } } #north
+				}
+			}
+			NOT = {
+				OR = {
+					has_landed_title = e_iron_throne
+					has_landed_title = d_winterfell
+					has_landed_title = k_north
+					k_north = { holder_scope = { war_with = ROOT } }
+				}
+			}	
+		}
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0.25
+				any_dynasty_member = {
+					is_close_relative = ROOT
+					prisoner = yes
+					host = { 
+						OR = {
+							has_landed_title = e_iron_throne
+							has_character_flag = supporting_king
+						}
+					}
+				}
+			}
+			modifier = {
+				factor = 10
+				OR = {
+					dynasty = 80
+					culture = crannogman
+				}	
+			}
+		}
+		
+		k_north = {
+			holder_scope = { 
+				random_current_enemy = {
+					limit = {
+						dynasty = 317
+						has_character_flag = war_for_the_north
+					}
+					ROOT = {
+						join_attacker_wars = PREV
+					}
+					if = {
+						limit = { NOT = { tier = EMPEROR } }
+						ROOT = {
+							clr_character_flag = neutral
+							clr_character_flag = supporting_king
+							set_character_flag = against_king
+							set_character_flag = against_loyal_liege
+						}	
+						e_iron_throne = {
+							holder_scope = { 
+								opinion = {
+									modifier = opinion_joined_rebellion
+									who = ROOT
+									years = 20
+								}
+								opinion = {
+									modifier = opinion_traitor
+									who = ROOT
+								}
+							}
+						}	
+						hidden_tooltip = {
+							reverse_opinion = {
+								modifier = opinion_with_rebel_leader
+								who = ROOT
+								years = 100
+							}
+							character_event = { id = mega_wars.31 }
+						}
+					}
+					if = {
+						limit = { tier = EMPEROR }
+						ROOT = {
+							clr_character_flag = neutral
+							set_character_flag = supporting_king
+							clr_character_flag = against_king
+						}
+						hidden_tooltip = {
+							reverse_opinion = {
+								modifier = opinion_with_king
+								who = ROOT
+								years = 100
+							}
+							character_event = { id = mega_wars.34 }
+						}
+					}
+				}	
+			}
+		}	
+		k_north = {
+			holder_scope = { 
+				opinion = {
+					modifier = opinion_traitor
+					who = ROOT
+				}
+				hidden_tooltip = { character_event = { id = mega_wars.36 } }
+			}
+		}	
+	}
+	option = {
+		name = "EVTOPTCfeast_for_crows.5" #OK
+		trigger = {
+			NOT = {
+				OR = {
+					liege = { has_landed_title = k_north }
+					liege = { has_landed_title = d_winterfell }
+					AND = {
+						independent = yes
+						primary_title = { is_variable_equal = { which = "de_facto_kingdom" value = 2 } } #north
+					}
+					has_landed_title = e_iron_throne
+					has_landed_title = d_winterfell
+					has_landed_title = k_north
+					war_with = FROM
+				}
+			}	
+		}
+	}
+	option = {
+		name = "EVTOPTDfeast_for_crows.5" #OK
+		trigger = {
+			k_north = { holder_scope = { war_with = ROOT } }	
+		}
+	}
+}
+#Installed Jon/Rickon join Stannis in war
+character_event = { #immediately vassalise the North
+	id = feast_for_crows.1199
+
+	is_triggered_only = yes
+	hide_window = yes
+	
+	immediate = {
+		clr_character_flag = neutral
+		if = {
+			limit = { FROM = { NOT = { tier = EMPEROR } } }
+			set_character_flag = against_king	
+			clr_character_flag = supporting_king		
+			any_independent_ruler = {
+				limit = { 
+					primary_title = { is_variable_equal = { which = "de_facto_kingdom" value = 2 } } #north
+					NOT = { tier = KING }
+					NOT = { war_with = ROOT }
+				}
+				set_defacto_liege = ROOT
+				set_character_flag = against_king
+				clr_character_flag = neutral
+				clr_character_flag = supporting_king
+			}
+			any_vassal = {
+				set_character_flag = against_king
+				clr_character_flag = neutral
+				clr_character_flag = supporting_king
+			}
+		}	
+		if = {
+			limit = { FROM = { tier = EMPEROR } }
+			clr_character_flag = against_king
+			set_character_flag = supporting_king		
+			any_independent_ruler = {
+				limit = { 
+					primary_title = { is_variable_equal = { which = "de_facto_kingdom" value = 2 } } #north
+					NOT = { tier = KING }
+					NOT = { war_with = ROOT }
+				}
+				set_defacto_liege = ROOT
+				clr_character_flag = against_king
+				clr_character_flag = neutral
+				set_character_flag = supporting_king	
+			}
+			any_vassal = {
+				clr_character_flag = against_king
+				clr_character_flag = neutral
+				set_character_flag = supporting_king
+			}
+		}	
+		if = {
+			limit = { character = 9269059 }
+			FROM = {
+				FROM = {
+					reverse_opinion = {
+						modifier = opinion_vengeance
+						who = ROOT
+					}
+				}
+			}
+		}	
+		if = {
+			limit = { has_character_flag = granted_north_human }
+			clr_character_flag = granted_north_human
+			FROM = {
+				any_vassal = {
+					limit = {
+						primary_title = {
+							OR = {
+								dejure_liege_title = { holder_scope = { character = ROOT } }
+								dejure_liege_title = { dejure_liege_title = { holder_scope = { character = ROOT } } }
+							}	
+						}
+					}
+					set_defacto_liege = ROOT
+					clr_character_flag = against_king
+					clr_character_flag = neutral
+					clr_character_flag = supporting_king
+				}
+			}
+		}
+		if = {
+			limit = {
+				dynasty = 59
+				NOT = { trait = legit_bastard }
+			}
+			any_vassal = {
+				limit = {
+					NOT = { dynasty = 87 }
+					NOT = { dynasty = 68 }
+					NOT = { culture = skagosi }
+				}
+				opinion = {
+					who = ROOT
+					modifier = opinion_restored_stark
+					years = 15
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = OK
+	}
+}
+character_event = {
+	id = feast_for_crows.11
+	desc = "EVTDESCfeast_for_crows.11"
+	picture = GFX_STARK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.11" 
+		prestige = 250
+		FROM = {
+			ROOT = { join_attacker_wars = PREV }
+			ROOT = { join_defender_wars = PREV }
+		}
+		recalc_succession = yes	
+	}
+}
+#Northern lord revassalised/
+character_event = {
+	id = feast_for_crows.12
+	desc = "EVTDESCfeast_for_crows.12"
+	picture = GFX_STARK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.11" 
+		k_north = { 
+			holder_scope = {
+				ROOT = { set_defacto_liege = PREV }
+			}
+		}	
+		if = {
+			limit = { FROM = { NOT = { tier = EMPEROR } } }
+			set_character_flag = against_king
+			clr_character_flag = supporting_king	
+		}	
+		if = {
+			limit = { FROM = { tier = EMPEROR } }
+			clr_character_flag = against_king
+			set_character_flag = supporting_king	
+		}
+		clr_character_flag = neutral	
+		clr_character_flag = against_loyal_liege
+	}
+}
+#Jeyne Poole Normalised
+character_event = {
+	id = feast_for_crows.13
+	desc = "EVTDESCfeast_for_crows.13"
+	picture = GFX_STARK
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.13" 
+		has_missing = {
+			limit = { 
+				dynasty = 95
+				is_alive = no
+			}	
+			father_even_if_dead = {
+				ROOT = {
+					set_father = PREV
+					dynasty = PREV
+				}
+				spouse_even_if_dead = {
+					ROOT = {
+						set_mother = PREV
+					}
+				}
+			}	
+			add_trait = dead_target 
+		}
+		recalc_succession = yes	
+		k_north = { remove_claim = ROOT }
+		k_riverlands = { remove_claim = ROOT }
+		c_winterfell = { remove_claim = ROOT }
+		d_winterfell = { remove_claim = ROOT }	
+		remove_trait = dead_target 	
+		remove_nickname = nick_arya		
+		create_character = {
+			female = yes
+			dynasty = random
+			age = 25
+		}
+		new_character = {
+			has_missing = { 
+				limit = { trait = dead_target  }
+				set_mother = PREV 
+				dynasty = PREV 
+			}
+			death = yes
+		}
+		create_character = {
+			female = no
+			dynasty = random
+			age = 25
+		}
+		new_character = {
+			has_missing = { 
+				limit = { trait = dead_target  }
+				set_father = PREV 
+				remove_trait = has_missing
+				remove_trait = dead_target 
+			}
+			death = yes
+		}		
+	}
+}
+#Martell's make Aegon choice
+character_event = {
+	id = feast_for_crows.14
+	desc = "EVTDESCfeast_for_crows.14"
+	picture = "GFX_evt_young_griff"
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		war = no
+		has_character_flag = neutral
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.14" #remain neutral
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 2
+				any_dynasty_member = {
+					is_close_relative = ROOT
+					host = { has_landed_title = e_iron_throne }
+				}
+			}
+			modifier = {
+				factor = 2
+				any_dynasty_member = {
+					is_close_relative = ROOT
+					host = { trait = rebel_leader }
+				}
+			}
+		}
+		set_character_flag = neutral
+		clr_character_flag = supporting_king
+		clr_character_flag = against_king 
+		clr_character_flag = inherit_war	
+		hidden_tooltip = {
+			any_vassal = {
+				clr_character_flag = supporting_king
+				set_character_flag = neutral 
+				clr_character_flag = against_king 
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTBfeast_for_crows.14" #against the king
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 1.2
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							opinion = { who = PREV value =  20 }
+						}
+					}	
+				}
+			}
+			modifier = {
+				factor = 1.2
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							opinion = { who = PREV value =  40 }
+						}
+					}	
+				}
+			}
+			modifier = {
+				factor = 1.2
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							opinion = { who = PREV value =  60 }
+						}
+					}	
+				}
+			}
+			modifier = {
+				factor = 1.2
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							opinion = { who = PREV value =  80 }
+						}
+					}	
+				}
+			}
+			modifier = {
+				factor = 1.2
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							opinion = { who = PREV value =  100 }
+						}
+					}	
+				}
+			}
+			modifier = {
+				factor = 0.8
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							NOT = { opinion = { who = PREV value =  0 } }
+						}
+					}	
+				}
+			}
+			modifier = {
+				factor = 0.8
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							NOT = { opinion = { who = PREV value =  -20 } }
+						}
+					}	
+				}
+			}
+			modifier = {
+				factor = 0.8
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							NOT = { opinion = { who = PREV value =  -40 } }
+						}
+					}	
+				}
+			}
+			modifier = {
+				factor = 0.8
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							NOT = { opinion = { who = PREV value =  -60 } }
+						}
+					}	
+				}
+			}
+			modifier = {
+				factor = 0.8
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							NOT = { opinion = { who = PREV value =  -80 } }
+						}
+					}	
+				}
+			}
+			modifier = {
+				factor = 0.7
+				c_rain_house = {
+					holder_scope = {
+						ROOT = {
+							NOT = { opinion = { who = PREV value =  -99 } }
+						}
+					}	
+				}
+			}
+		}
+		set_character_flag = against_king
+		set_character_flag = supporting_young_griff 
+		clr_character_flag = neutral
+		clr_character_flag = supporting_king
+		clr_character_flag = inherit_war
+		c_rain_house = {
+			holder_scope = {
+				ROOT = {
+					join_attacker_wars = PREV
+				}
+				opinion = {
+					modifier = opinion_joined_cause
+					who = ROOT
+					years = 10
+				}
+				hidden_tooltip = {
+					letter_event = { id = mega_wars.31 }
+					reverse_opinion = {
+						modifier = opinion_with_rebel_leader
+						who = ROOT
+						years = 100
+					}
+				}	
+			}	
+		}	
+		e_iron_throne = {
+			holder_scope = {
+				opinion = {
+					modifier = opinion_joined_rebellion
+					who = ROOT
+					years = 10
+				}
+				hidden_tooltip = {
+					character_event = { id = mega_wars.32 }
+				}
+			}
+		}
+		hidden_tooltip = {
+			any_vassal = {
+				clr_character_flag = supporting_king
+				clr_character_flag = neutral 
+				set_character_flag = against_king 
+			}
+		}		
+	}
+}	
+#Inform human Stannis bestowing north will gain ally
+character_event = {
+	id = feast_for_crows.15
+	desc = "EVTDESCfeast_for_crows.15"
+	picture = GFX_STARK
+	
+	is_triggered_only = yes
+	
+	immediate = { 
+		hidden_tooltip = {
+			any_independent_ruler = {
+				limit = { 
+					primary_title = { is_variable_equal = { which = "de_facto_kingdom" value = 2 } } #north
+					NOT = { tier = KING }
+					NOT = { war_with = ROOT }
+				}
+				set_defacto_liege = ROOT
+				set_character_flag = against_king
+				clr_character_flag = neutral
+				clr_character_flag = supporting_king
+			}
+			any_vassal = {
+				set_character_flag = against_king
+				clr_character_flag = neutral
+				clr_character_flag = supporting_king
+			}
+		}	
+		add_character_modifier = {
+			name = "new_rebel_leader"
+			duration = 20
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.15" 
+		custom_tooltip = { text = TOOLTIPfeast_for_crows.15 }
+		hidden_tooltip = { k_north = { de_jure_liege = e_north } }
+	}
+}	
+#Human Stannis gains North as ally
+character_event = {
+	id = feast_for_crows.16
+	desc = "EVTDESCfeast_for_crows.16"
+	picture = GFX_STARK
+	
+	hide_from = yes
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		k_north = {
+			holder_scope = {
+				NOT = { character = ROOT }
+				culture = northman
+				ai = yes
+				NOT = { war_with = ROOT }
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.16" 
+		hidden_tooltip = { k_north = { de_jure_liege = e_iron_throne } }
+		k_north = {
+			holder_scope = {
+				d_winterfell = { 
+					if = {
+						limit = { holder_scope = { character = ROOT } }
+						grant_title = PREV
+					}	
+				}
+				c_winterfell = { 
+					if = {
+						limit = { holder_scope = { character = ROOT } }
+						grant_title = PREV
+					} 
+				}
+				join_attacker_wars = ROOT
+				join_defender_wars = ROOT
+				hidden_tooltip = {
+					set_character_flag = granted_north_human
+					character_event = { id = feast_for_crows.1199 } #Organise The North
+					character_event = { id = feast_for_crows.11 days = 1 }
+					opinion = {
+						modifier = opinion_with_rebel_leader
+						who = ROOT
+						years = 100
+					}
+				}
+			}
+		}
+	}
+}	
+#Ironborn end sieges
+character_event = {
+	id = feast_for_crows.160
+	
+	is_triggered_only = yes
+	hide_window = yes
+	
+	immediate = {
+		siege = {
+			enemy = {
+				morale = -1
+				troops = -1
+			}
+		}	
+		if = {
+			limit = { has_character_flag = theon }
+			clr_character_flag = theon
+			c_dreadfort = {
+				holder_scope = {
+					ROOT = { imprison = PREV }
+				}
+			}
+		}
+		# if = {
+			# limit = { in_siege = yes }
+			# character_event = { id = feast_for_crows.160 days = 3 }
+		# }
+	}
+	
+	option = {
+		name = OK
+	}
+}
+#Inform Baelish Riverlands obtained
+character_event = {
+	id = feast_for_crows.17
+	desc = "EVTDESCfeast_for_crows.17"
+	picture = GFX_evt_riverrun
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		dynasty = 171
+		has_landed_title = d_harrenhal
+	}
+	
+	option = {
+		name = OK
+		custom_tooltip = {
+			text = TOOLTIPbaelish_mockingbird
+			hidden_tooltip = {
+				any_child = {
+					limit = { dynasty = ROOT }
+					dynasty = 601
+					any_child = {
+						limit = { dynasty = ROOT }
+						dynasty = 601
+					}	
+				}
+				dynasty = 601
+				father_even_if_dead = { # Father
+					dynasty = 601
+					father_even_if_dead = { # Grandfather
+						dynasty = 601
+						father_even_if_dead = { # Great Grandfather
+							dynasty = 601
+						}
+					}
+				}
+			}
+		}
+		k_vale = {
+			holder_scope = {
+				c_midlor_point = { gain_title = PREV }
+			}
+		}
+	}
+}	
+#Inform Jon/Rickon Ice returned
+character_event = {
+	id = feast_for_crows.18
+	desc = "EVTDESCfeast_for_crows.18"
+	picture = "GFX_evt_valyrian_steel"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = OK
+		add_trait = ice
+	}
+}	
+##Inform King Aegon declares war
+letter_event  = {
+	id = feast_for_crows.19
+	desc = "EVTDESCfeast_for_crows.19"
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		FROM = {
+			is_ruler = yes
+			dynasty = 497
+		}	
+	}
+	
+	option = {
+		name = "EVTOPTAclash_of_kings.13" 	
+	}
+}
+#Stannis loses, Aegon declares war
+character_event = {
+	id = feast_for_crows.20
+	desc = "EVTDESCfeast_for_crows.20"
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		is_ruler = yes
+		dynasty = 497
+		NOT = { has_landed_title = e_iron_throne }
+		NOT = {
+			any_war = {
+				OR = {
+					using_cb = claim_stormlands_ACOK
+					using_cb = claim_iron_throne_ACOK
+				}	
+			}
+		}
+	}
+	
+	immediate = { 	
+		set_character_flag = war_for_iron_throne 
+	}
+	
+	option = {
+		name = OK
+		hidden_tooltip = {
+			304 = { remove_province_modifier = utterly_defeated }
+			set_defacto_liege = ROOT
+		}	
+		e_iron_throne = {
+			reverse_war = {
+				target = ROOT
+				casus_belli = claim_iron_throne_ACOK
+			}
+			holder_scope = {
+				hidden_tooltip = { 
+					letter_event = { id = feast_for_crows.19 } 						
+				}	
+			}
+		}
+		hidden_tooltip = {
+			ROOT = {
+				clr_character_flag = neutral
+				set_character_flag = rebel_leader
+				add_trait = rebel_leader
+				any_vassal = { 
+					clr_character_flag = neutral
+					set_character_flag = against_king 
+				}
+			}		
+			d_golden_company = {
+				holder_scope = {
+					set_character_flag = join_young_griff
+					character_event = { id = clash_of_kings.7 days = 1 }
+				}	
+			}
+			any_playable_ruler = {
+				limit = { 
+					has_opinion_modifier = {
+						modifier = opinion_with_rebel_leader
+						who = ROOT
+					}
+				}
+				clr_character_flag = neutral
+				set_character_flag = against_king
+				set_character_flag = join_young_griff
+				character_event = { id = clash_of_kings.7 days = 1 }
+			}
+		}
+	}
+}
+
+###Littlefinger-Sansa events###
+#What shall I do with Sansa?
+character_event = {
+	id = feast_for_crows.21
+	desc = "EVTDESCfeast_for_crows.21"
+	
+	is_triggered_only = yes
+	
+	option = { #Propose Harry the Heir marriage
+		name = EVTOPTAfeast_for_crows.21
+		liege = {
+			random_vassal = { #Lady Waynwood receives proposal
+				limit = { character = 94021 }
+				letter_event = { id = feast_for_crows.22 tooltip = TOOLTIPfeast_for_crows.22 }
+				random_courtier = {
+					limit = { character = 94027 }
+					tooltip = { }
+				}
+			}
+		}
+	}
+	option = { #Secretly betroth to self
+		name = EVTOPTBfeast_for_crows.21
+		random_courtier = {
+			limit = { character = 9266059 }
+			custom_tooltip = {
+				text = TOOLTIPfeast_for_crows.21B
+				hidden_tooltip = {
+					add_trait = forbid_marriage
+					set_character_flag = betrothed_to_littlefinger
+				}
+			}
+		}
+	}
+	option = { #Do nothing for now
+		name = EVTOPTCfeast_for_crows.21
+		ai_chance = { factor = 0 }
+		hidden_tooltip = { remove_trait = forbid_marriage }
+	}
+}
+#Lady Waynwood receives proposal
+letter_event = {
+	id = feast_for_crows.22
+	desc = "EVTDESCfeast_for_crows.22"
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		any_courtier = { character = 94027 }
+		FROM = { 
+			is_alive = yes
+			any_courtier = { 
+				character = 9266059 
+				is_married = no 
+				is_betrothed = no
+			} 
+		}
+	}
+	
+	option = { #Accept
+		name = EVTOPTAfeast_for_crows.21
+		ai_chance = { 
+			factor = 10000 
+			modifier = {
+				factor = 0
+				any_courtier = { 
+					character = 94027 
+					OR = {
+						is_married = yes
+						is_betrothed = yes
+					}
+				}
+			}			
+		}
+		wealth = 200
+		random_courtier = {
+			limit = { character = 94027 }
+			tooltip = { }
+			FROM = {
+				letter_event = { id = feast_for_crows.24 days = 3 tooltip = TOOLTIPfeast_for_crows.24 }
+				random_courtier = {
+					limit = { character = 9266059 }
+					character_event = { id = feast_for_crows.23 days = 3 tooltip = TOOLTIPfeast_for_crows.23 }
+				}	
+			}
+		}
+	}
+	option = { #Refuse
+		name = EVTOPTBfeast_for_crows.22
+		ai_chance = { factor = 0.1 }
+		FROM = {
+			letter_event = { id = feast_for_crows.25 days = 3 }
+		}		
+	}
+}	
+character_event = { #add the betrothal
+	id = feast_for_crows.23
+	
+	is_triggered_only = yes
+	hide_window = yes
+	
+	immediate = {
+		add_trait = forbid_marriage
+		set_character_flag = betrothed_to_harry_the_heir
+		FROM = {
+			random_courtier = {
+				limit = { character = 94027 }
+				add_trait = forbid_marriage
+			}
+		}
+	}
+	
+	option = {
+		name = OK
+	}
+}	
+#Inform Accept
+letter_event = {
+	id = feast_for_crows.24
+	desc = "EVTDESCfeast_for_crows.24"
+	
+	is_triggered_only = yes
+	
+	option = { 
+		name = OK
+		hidden_tooltip = { remove_trait = forbid_marriage }
+		random_courtier = {
+			limit = { character = 9266059 }
+			custom_tooltip = { text = TOOLTIPfeast_for_crows.23 }
+		}	
+	}
+}
+#Inform Reject
+letter_event = {
+	id = feast_for_crows.25
+	desc = "EVTDESCfeast_for_crows.25"
+	
+	is_triggered_only = yes
+	
+	option = { #Secretly betroth to self
+		name = EVTOPTBfeast_for_crows.25
+		trigger = {
+			is_married = no
+			is_betrothed = no
+		}
+		random_courtier = {
+			limit = { character = 9266059 }
+			custom_tooltip = {
+				text = TOOLTIPfeast_for_crows.21B
+				hidden_tooltip = {
+					add_trait = forbid_marriage
+					set_character_flag = betrothed_to_littlefinger
+				}
+			}
+		}
+	}
+	option = { #Do nothing for now
+		name = EVTOPTCfeast_for_crows.25
+		ai_chance = { factor = 0 }
+		hidden_tooltip = { remove_trait = forbid_marriage }
+	}
+}
+#add Sansa's heritage (from deciison)
+character_event = { 
+	id = feast_for_crows.26
+	
+	is_triggered_only = yes
+	hide_window = yes
+	
+	trigger = { character = 9266059 }
+	
+	immediate = {
+		set_name = Sansa
+		remove_nickname = nick_stone
+		dead_target = {
+			limit = { 
+				dynasty = 59
+				is_alive = no
+				death_reason = death_execution
+			}	
+			ROOT = {
+				set_father = PREV
+				dynasty = PREV
+			}
+			spouse_even_if_dead = {
+				ROOT = {
+					set_mother = PREV
+				}
+			}
+		}
+		recalc_succession = yes
+		k_north = {
+			add_pressed_claim = ROOT
+		}
+		if = {
+			limit = { trait = bastard }
+			remove_trait = bastard	
+		}
+		if = {
+			limit = { trait = forbid_marriage }
+			remove_trait = forbid_marriage
+		}
+		if = {
+			limit = { NOT = { mother = { is_alive = yes } } }
+			add_weak_claim = k_riverlands
+		}
+		has_missing = {
+			limit = { character = 6059 }
+			add_trait = dead_target 
+		}
+		create_character = {
+			female = yes
+			dynasty = random
+			age = 25
+		}
+		new_character = {
+			has_missing = { 
+				limit = { trait = dead_target  }
+				set_mother = PREV 
+				dynasty = PREV 
+			}
+			death = yes
+		}
+		create_character = {
+			female = no
+			dynasty = random
+			age = 25
+		}
+		new_character = {
+			has_missing = { 
+				limit = { trait = dead_target  }
+				set_father = PREV 
+				remove_trait = has_missing
+				remove_trait = dead_target 
+			}
+			death = yes
+		}
+		any_playable_ruler = {
+			limit = {
+				ai = no
+				capital_scope = { region = world_westeros }
+				NOT = { character = FROM }			
+				NOT = { trait = wildling }			
+			}
+			character_event = { id = feast_for_crows.27 days = 1 }
+		}
+		##If spouse is Harry the heir make littlefinger eager to off sweet robin
+		if = {
+			limit = { 
+				spouse = { character = 94027 }
+				FROM = { 
+					character = 94043
+					ai = yes 
+				}
+				k_vale = { holder_scope = { current_heir = { character = 94027 } } }
+			}	
+			FROM = { 
+				set_character_flag = abort_plot
+				set_character_flag = harry_the_heir_scheme
+			}
+		}
+	}
+	
+	option = {
+		name = OK
+	}
+}	
+#Inform world of Sansa's reveal
+character_event = {
+	id = feast_for_crows.27
+	desc = "EVTDESCfeast_for_crows.27"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = OK
+		trigger = { NOT = { is_married = FROM } }
+	}
+	option = {
+		name = EVTOPTAfeast_for_crows.27
+		trigger = { is_married = FROM }
+	}
+}	
+#Blackwoods defeated, prepare for punishment
+character_event = {
+	id = feast_for_crows.28
+	desc = "EVTDESC999900949"
+	
+	is_triggered_only = yes
+	
+	immediate = {
+		FROM = {
+			reverse_opinion = { who = ROOT modifier = opinion_de_facto_liege years = 25 }
+		}	
+		ROOT = { 
+			any_demesne_title = { 
+				limit = { NOT = { tier = BARON } }
+				set_variable = { which = "de_facto_empire" value = 1 } 
+			} 
+		}
+		set_defacto_liege = THIS
+		any_demesne_title = {
+			limit = { 
+				OR = {
+					tier = COUNT
+					tier = DUKE
+				}
+			}				
+			set_variable = { which = "de_facto_kingdom" value = 3 } 
+		}
+		set_character_flag = neutral
+		clr_character_flag = against_king
+		clr_character_flag = supporting_king
+		clr_character_flag = mega_war_liege_loan
+		hidden_tooltip = { remove_trait = rebel_leader }
+	}
+	
+	option = {
+		name = "EVTOPTA999900949" 
+		FROM = {
+			character_event = { id = mega_wars.75 days = 1  tooltip = "TOOLTIPmega_wars.75" }
+			set_character_flag = issue_punishments
+		}
+	}
+}	
+#Red Wedding Stark/Frey Blood feud
+character_event = {
+	id = feast_for_crows.29
+	
+	desc = {
+		text = "EVTDESCfeast_for_crows.29"
+		trigger = { dynasty = 59 }
+	}
+	desc = {
+		text = "EVTDESCfeast_for_crows.29B"
+		trigger = { dynasty = 127 }
+	}	
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = {
+			text = "EVTOPTAfeast_for_crows.29"
+			trigger = { dynasty = 59 }
+		}
+		name = {
+			text = "EVTOPTAfeast_for_crows.29B"
+			trigger = { dynasty = 127 }
+		}
+		FROM = {
+			opinion = {
+				who = ROOT
+				modifier = opinion_blood_feud
+			}
+			custom_tooltip = { text = TOOLTIPNEWBLOODFEUD }
+			hidden_tooltip = {
+				any_dynasty_member = {
+					limit = {
+						is_alive = yes
+						NOT = { character = PREV }
+					}
+					opinion = {
+						who = ROOT
+						modifier = opinion_blood_feud
+					}
+				}
+			}
+		}
+	}
+}
+#Red Wedding Stark/Lannister Blood feud
+character_event = {
+	id = feast_for_crows.30
+	
+	desc = {
+		text = "EVTDESCfeast_for_crows.30"
+		trigger = { dynasty = 59 }
+	}
+	desc = {
+		text = "EVTDESCfeast_for_crows.30B"
+		trigger = { dynasty = 190 }
+	}	
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = {
+			text = "EVTOPTAfeast_for_crows.30"
+			trigger = { dynasty = 59 }
+		}
+		name = {
+			text = "EVTOPTAfeast_for_crows.30B"
+			trigger = { dynasty = 190 }
+		}
+		FROM = {
+			opinion = {
+				who = ROOT
+				modifier = opinion_blood_feud
+			}
+			custom_tooltip = { text = TOOLTIPNEWBLOODFEUD }
+			hidden_tooltip = {
+				any_dynasty_member = {
+					limit = {
+						is_alive = yes
+						NOT = { character = PREV }
+					}
+					opinion = {
+						who = ROOT
+						modifier = opinion_blood_feud
+					}
+				}
+			}
+		}
+	}
+}
+###Dany Quest###
+#Dany is Queen of Meereen (Triggered either on AFFC start or after liberation of Meereen in ACoK)
+narrative_event = {
+	id = feast_for_crows.50
+	desc = "EVTDESCfeast_for_crows.50"
+	title = "EVTTITLEfeast_for_crows.50"
+	picture = GFX_evt_dany_meereen_2
+	
+	hide_from = yes
+	
+	is_triggered_only = yes
+	
+	trigger = { character = 77041 }
+	
+	immediate = { 
+		clr_character_flag = liberation_of_meereen
+		if = {
+			limit = { NOT = { has_character_flag = affc_scenario } }
+			FROM = {
+				FROM = {
+					d_meereen = { gain_title = PREV }
+					b_meereen = { 
+						gain_title = PREV 
+						PREV = { capital = PREV }
+					}
+					b_wallsmeereen = { gain_title = PREV }
+					random_vassal = {
+						limit = { is_patrician = yes }
+						b_plazaofmanycolors = { gain_title = PREV }
+					}
+					random_vassal = {
+						limit = { is_patrician = yes }
+						b_meereenharbor = { gain_title = PREV }
+					}
+					random_vassal = {
+						limit = { is_patrician = yes }
+						b_fightingpits= { gain_title = PREV }
+					}
+				}
+			}
+			activate_title = { status = no title = k_great_grass_sea }
+			k_great_grass_sea = { destroy_landed_title = ROOT }
+			hidden_tooltip = {
+				random_courtier = {
+					limit = { character = 201302 }
+					ROOT = {
+						any_realm_character = {
+							limit = { has_character_flag = barristan_squire }
+							move_character = ROOT
+							set_guardian = PREVPREV
+						}
+					}
+				}	
+			}
+		}
+		if = {
+			limit = { has_character_flag = affc_scenario } 
+			d_meereen = {
+				holder_scope = {
+					b_meereen = { 
+						gain_title = PREV 
+						PREV = { capital = PREV }
+					}
+					b_wallsmeereen = { gain_title = PREV }
+					random_vassal = {
+						limit = { is_patrician = yes }
+						b_plazaofmanycolors = { gain_title = PREV }
+					}
+					random_vassal = {
+						limit = { is_patrician = yes }
+						b_meereenharbor = { gain_title = PREV }
+					}
+					random_vassal = {
+						limit = { is_patrician = yes }
+						b_fightingpits= { gain_title = PREV }
+					}
+				}
+			}				
+		}
+		hidden_tooltip = {
+			create_random_priest = {
+				female = yes
+				random_traits = yes
+				culture = meereenese
+				religion = harpy
+				dynasty = none
+			}
+			new_character = {
+				add_trait = grace
+				b_graces = { gain_title = PREV }
+				set_defacto_liege = ROOT
+			}
+			random_friend = { #Drogon goes wild
+				limit = { trait = dragon }
+				character_event = { id = dragon.85 days = 150 random = 75 }
+			}	
+			k_meereen = { 
+				succession = seniority 
+				ROOT = { 
+					set_character_flag = flag_slavery_treaty_breach 
+				}
+				add_law = slavery_0
+				add_law = treaty_breach_1
+			}
+			recalc_succession = yes
+			set_character_flag = enacted_seniority	
+		}	
+	} 
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.50" 
+		hidden_tooltip = {
+			d_meereen = {
+				holder_scope = { prisoner = no }
+			}
+		}
+		if = {
+			limit = { #If ACoK scenario give some cash
+				NOT = { has_character_flag = affc_scenario }
+			}			
+			wealth = 500
+			hidden_tooltip = { c_astapor = { holder_scope = { b_worm_pyramid = { gain_title = PREV } } } }
+		}
+		k_yunkai = { holder_scope = { character_event = { id = feast_for_crows.51 tooltip = TOOLTIPfeast_for_crows.51 } } }
+		if = { #If AFFC scenario give some troops
+			limit = { has_character_flag = affc_scenario }
+			capital_scope = {
+				ROOT = {
+					if = {
+						limit = { any_courtier = { character = 201302 is_alive = yes } }
+						spawn_unit = {
+							province = PREV
+							home = PREV
+							owner = ROOT
+							leader = 201302
+							troops = {
+								light_infantry = { 2333 2333 }
+								archers = { 333 333 }
+								heavy_infantry = { 166 166 }
+							}
+							attrition = 1.0
+						}
+					}	
+					if = {
+						limit = { NOT = { any_courtier = { character = 201302 is_alive = yes } } }
+						spawn_unit = {
+							province = PREV
+							home = PREV
+							owner = ROOT
+							troops = {
+								light_infantry = { 2333 2333 }
+								archers = { 333 333 }
+								heavy_infantry = { 166 166 }
+							}
+							attrition = 1.0
+						}
+					}	
+					spawn_unit = {
+						province = PREV
+						home = PREV
+						owner = ROOT
+						troops = {
+							light_infantry = { 2333 2333 }
+							archers = { 333 333 }
+							heavy_infantry = { 166 166 }
+						}
+						attrition = 1.0
+					}
+					spawn_unit = {
+						province = PREV
+						home = PREV
+						owner = ROOT
+						troops = {
+							light_infantry = { 2333 2333 }
+							archers = { 333 333 }
+							heavy_infantry = { 166 166 }
+						}
+						attrition = 1.0
+					}
+				}	
+			}	
+		}
+		random_courtier = {
+			limit = { character = 102 }
+			c_volantis = {
+				holder_scope = {
+					reverse_banish = PREVPREV
+				}
+			}	
+		}
+	}
+}
+character_event = { #Yunkai declares war
+	id = feast_for_crows.51
+	desc = "EVTDESCfeast_for_crows.51"
+	picture = GFX_evt_dany_meereen_2
+		
+	is_triggered_only = yes
+		
+	option = {
+		name = OK
+		k_yunkai = { add_law = slavery_2 }
+		set_global_flag = enslavement_of_astapor
+		clr_global_flag = no_enslave_astapor
+		k_astapor = {
+			if = {
+				limit = { NOT = { has_law = slavery_0 } }
+				hidden_tooltip = { add_law_w_cooldown = slavery_0 }
+			}	
+			reverse_war = {
+				target = ROOT
+				casus_belli = war_of_enslavement
+			}
+		}
+		any_independent_ruler = {
+			limit = {
+				NOT = { war_with = ROOT }
+				OR = {
+					has_landed_title = k_new_ghis
+					has_landed_title = d_mantarys
+					has_landed_title = d_tolos
+					has_landed_title = d_elyria
+					has_landed_title = k_volantis
+				}
+			}
+			character_event = { id = feast_for_crows.52 tooltip = TOOLTIPfeast_for_crows.52 }
+		}
+		capital_scope = {
+			ROOT = {
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						light_infantry = { 2333 2333 }
+						archers = { 333 333 }
+						heavy_infantry = { 166 166 }
+						war_elephants = { 10 10 }
+					}
+					attrition = 1.0
+				}	
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						light_infantry = { 2333 2333 }
+						archers = { 333 333 }
+						heavy_infantry = { 166 166 }
+						war_elephants = { 10 10 }
+					}
+					attrition = 1.0
+				}
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						light_infantry = { 2333 2333 }
+						archers = { 333 333 }
+						heavy_infantry = { 166 166 }
+						war_elephants = { 10 10 }
+					}
+					attrition = 1.0
+				}
+			}	
+		}
+		if = {
+			limit = { ai = yes }
+			character_event = { id = feast_for_crows.519 days = 150 }
+		}
+	}
+}
+#If Yunkai & allies + Astapor are AI end the war early in Yunaki's favour
+character_event = { 
+	id = feast_for_crows.519
+		
+	is_triggered_only = yes
+	hide_window = yes
+	
+	trigger = {
+		has_global_flag = enslavement_of_astapor
+		ai = yes
+		k_astapor = {
+			holder_scope = {
+				ai = yes 
+				war_with = ROOT 
+				k_new_ghis = {
+					holder_scope = {
+						OR = {
+							ai = yes
+							NOT = { war_with = PREVPREV }
+						}
+					}
+				}	
+				k_volantis = {
+					holder_scope = {
+						OR = {
+							ai = yes
+							NOT = { war_with = PREVPREV }
+						}
+					}
+				}
+				d_elyria = {
+					holder_scope = {
+						OR = {
+							ai = yes
+							NOT = { war_with = PREVPREV }
+						}
+					}
+				}
+				d_tolos = {
+					holder_scope = {
+						OR = {
+							ai = yes
+							NOT = { war_with = PREVPREV }
+						}
+					}
+				}
+				d_mantarys = {
+					holder_scope = {
+						OR = {
+							ai = yes
+							NOT = { war_with = PREVPREV }
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	immediate = {
+		prestige = 200
+		character_event = { id = slavery.1000 tooltip = "EVTTOOLTIPSLAVERY1000" } # The attacker gains a slave camp level
+		k_astapor = {
+			holder_scope = {
+				prestige = -400
+				any_independent_ruler = {
+					limit = { 
+						NOT = { character = ROOT } 
+						war_with = PREV
+					}
+					character_event = { id = feast_for_crows.52 days = 1 }
+				}
+				ROOT = {
+					occupy_minors_of_occupied_settlements = PREV
+					gain_all_occupied_titles = { who = PREV type = invasion }	
+				}		
+			}
+		}	
+		k_meereen = {
+			holder_scope = {
+				set_character_flag = enslavement_of_meereen
+				narrative_event = { id = feast_for_crows.53 days = 30 }
+			}	
+			reverse_war = {
+				target = ROOT
+				casus_belli = war_of_enslavement
+			}
+		}
+		clr_global_flag = enslavement_of_astapor
+		any_war = {
+			if = {
+				limit = { 
+					OR = {
+						using_cb = slave_raid 
+						defender = { character = ROOT } 
+					}	
+				}	
+				end_war = invalid
+			}	
+		}
+		k_astapor = {
+			holder_scope = { imprison = ROOT }
+			usurp_title_plus_barony_if_unlanded = { target = ROOT type = invasion }
+			add_law = slavery_2
+		}
+	}
+		
+	option = {
+		name = OK
+	}
+}
+
+character_event = { #Slaver joins in
+	id = feast_for_crows.52
+	desc = "EVTDESCfeast_for_crows.51"
+	picture = GFX_evt_dany_meereen_2
+		
+	is_triggered_only = yes
+		
+	option = {
+		name = "EVTOPTAfeast_for_crows.52" 
+		join_attacker_wars = FROM
+	}
+	option = {
+		name = "EVTOPTBfeast_for_crows.52" 
+		ai_chance = { factor = 0 }
+	}
+}
+#Bad things happening in Meereen, Yunkai attacks (triggered after Yunisk enslavement of Astapor)
+narrative_event = {
+	id = feast_for_crows.53
+	desc = "EVTDESCfeast_for_crows.53"
+	title = "EVTTITLEfeast_for_crows.53"
+	picture = GFX_evt_dany_meereen_2
+	
+	is_triggered_only = yes
+	
+	trigger = { character = 77041 }
+	
+	immediate = {
+		hidden_tooltip = {
+			if = {
+				limit = { #If ACoK scenario trigger Young Griff Invasion
+					NOT = { has_character_flag = affc_scenario }
+					NOT = { has_global_flag = aegon_invasion }
+				}
+				d_golden_company = { holder_scope = { narrative_event = { id = invasions.1 days = 10 random = 5 } } }
+			}
+			k_meereen = { succession = seniority }
+			recalc_succession = yes
+			set_character_flag = enacted_seniority	
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.53" #Reject Qarth's offer
+		ai_chance = { factor = 95 }
+		k_yunkai = { 
+			holder_scope = { 
+				k_qarth = { holder_scope = { join_attacker_wars = PREVPREV } }
+				d_second_sons = { holder_scope = { join_attacker_wars = PREVPREV } }
+			}
+		}			
+		if = {
+			limit = { #Daario
+				d_stormcrows = { holder_scope = { character = 16892322 } }
+			}
+			d_stormcrows = { holder_scope = { add_lover = ROOT } }
+		}
+		hidden_tooltip = { narrative_event = { id = feast_for_crows.54 days = 10 } }
+		d_stormcrows = { holder_scope = { join_defender_wars = ROOT } }
+		d_lhazosh = { holder_scope = { join_defender_wars = ROOT } }	
+		d_hesh = { holder_scope = { join_defender_wars = ROOT } }
+		d_kosrak = { holder_scope = { join_defender_wars = ROOT } }		
+	}
+	
+	option = {
+		name = "EVTOPTBfeast_for_crows.53" #Accept
+		ai_chance = { factor = 5 }
+		hidden_tooltip = {
+			activate_title = { status = yes title = k_great_grass_sea }
+			k_great_grass_sea = { 
+				gain_title = ROOT 
+				add_law = centralization_1
+				add_law = slavery_0
+			}
+		}
+		tooltip = {
+			spawn_fleet = {
+				province = closest # closest sea zone
+				owner = ROOT
+				troops =
+				{
+					galleys = { 150 150 }
+				}
+				earmark = danys_fleet
+			}
+		}	
+		any_war = {
+			if = {
+				limit = { attacker = { has_landed_title = k_yunkai } }
+				end_war = invalid
+			}	
+		}
+		k_meereen = {
+			k_yunkai = { 
+				holder_scope = {
+					usurp_title = { target = PREVPREV type = invasion }
+				}
+			}	
+			add_law = slavery_2
+			hidden_tooltip = { revoke_law = treaty_breach_1 }
+		}	
+		tooltip = {
+			c_meereen = {
+				d_meereen = { 
+					holder_scope = {
+						usurp_title = { target = PREVPREV type = invasion }
+					}
+				}	
+			}
+		}	
+		hidden_tooltip = {
+			any_demesne_title = {
+				limit = { 
+					NOT = { title = k_great_grass_sea } 
+					NOT = { title = d_great_grass_sea } 
+				}
+				d_meereen = {
+					holder_scope = {
+						usurp_title = { target = PREVPREV type = invasion }
+					}
+				}
+			}
+			k_meereen = {
+				holder_scope = {
+					ROOT = {
+						any_vassal = {
+							limit = { capital_scope = { empire = { title = e_ghiscar } } }
+							set_defacto_liege = PREVPREV
+						}
+					}
+				}
+			}
+			k_dorne = {
+				holder_scope = {
+					random_dynasty_member = {
+						limit = { character = 5001 }
+						remove_trait = wikid
+						remove_trait = forbid_marriage
+					}
+				}
+			}
+			c_yronwood = {
+				holder_scope = {
+					random_dynasty_member = {
+						limit = { character = 2012 }
+						remove_trait = wikid
+					}
+				}
+			}
+			c_vulturesroost = {
+				holder_scope = {
+					random_dynasty_member = {
+						limit = { character = 1003 }
+						remove_trait = wikid
+					}
+				}
+			}				
+		}
+		prestige = -400
+		hidden_tooltip = { 
+			narrative_event = { id = feast_for_crows.61 days = 10 } #If Young Griff is invading potential alliance
+			character_event = { id = feast_for_crows.62 days = 10 } # If not start war for Iron Throne
+		}
+	}
+}
+#Marry Meereenese Noble or Quentyn?
+narrative_event = {
+	id = feast_for_crows.54
+	desc = "EVTDESCfeast_for_crows.54"
+	title = "EVTTITLEfeast_for_crows.54"
+	picture = GFX_evt_dany_meereen_2
+	
+	is_triggered_only = yes
+	
+	trigger = { character = 77041 }
+	
+	immediate = {
+		hidden_tooltip = {
+			k_dorne = {
+				holder_scope = {
+					random_dynasty_member = {
+						limit = { character = 5001 }
+						move_character = ROOT
+					}
+				}
+			}
+			c_yronwood = {
+				holder_scope = {
+					random_dynasty_member = {
+						limit = { character = 2012 }
+						move_character = ROOT
+					}
+				}
+			}
+			c_vulturesroost = {
+				holder_scope = {
+					random_dynasty_member = {
+						limit = { character = 1003 }
+						move_character = ROOT
+					}
+				}
+			}	
+			remove_trait = widowed
+			d_meereen = {
+				holder_scope = {				
+					if = {
+						limit = { 
+							OR = {
+								is_female = yes
+								NOT = {
+									OR = {
+										character = 16571013
+										AND = {
+											is_married = no
+											age = 16
+										}							
+									}
+								}	
+							}	
+							NOT = {
+								any_realm_character = {
+									is_female = no
+									is_married = no
+									age = 16
+									any_dynasty_member = { is_patrician = yes }
+								}	
+							}
+						}	
+						create_character = {
+							random_traits = yes
+							dynasty = random
+							female = no
+							age = 25
+							trait = ambitious
+							trait = authoritative
+							attributes = {
+								stewardship = 10
+								intrigue = 8
+								martial = 4
+								diplomacy = 8
+								learning = 7
+							}
+						}
+						new_character = {
+							set_character_flag = meereen_marriage
+							move_character = PREV
+						}	
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.54" #Meereense Noble
+		ai_chance = { factor = 90 }
+		d_meereen = {
+			holder_scope = {				
+				any_war = {
+					if = {
+						limit = {
+							attacker = { character = PREV }
+							defender = { character = ROOT }
+						}
+						end_war = whitepeace
+					}	
+				}
+				if = {
+					limit = { 
+						is_female = no
+						OR = {
+							character = 16571013
+							AND = {
+								is_married = no
+								age = 16
+							}							
+						}	
+					}					
+					hidden_tooltip = {	
+						remove_spouse = spouse
+						remove_trait = widowed
+						if = {
+							limit = { trait = forbid_marriage }
+							remove_trait = forbid_marriage
+						}
+						if = {
+							limit = {
+								prisoner = yes
+								host = { character = ROOT }
+							}
+							prisoner = no
+						}
+					}
+					add_spouse_matrilineal = ROOT
+				}
+				if = {
+					limit = { 
+						OR = {
+							is_female = yes
+							NOT = {
+								OR = {
+									character = 16571013
+									AND = {
+										is_married = no
+										age = 16
+									}							
+								}
+							}	
+						}	
+						NOT = {
+							any_realm_character = {
+								is_female = no
+								is_married = no
+								age = 16
+								any_dynasty_member = { is_patrician = yes }
+							}	
+						}
+					}	
+					random_realm_character = {
+						limit = {
+							has_character_flag = meereen_marriage
+						}
+						clr_character_flag = meereen_marriage
+						add_spouse_matrilineal = ROOT
+					}
+				}
+				if = {
+					limit = { 
+						OR = {
+							is_female = yes
+							NOT = {
+								OR = {
+									character = 16571013
+									AND = {
+										is_married = no
+										age = 16
+									}							
+								}
+							}	
+						}	
+					}		
+					random_realm_character = {
+						limit = {
+							is_female = no
+							is_married = no
+							age = 16
+							any_dynasty_member = { is_patrician = yes }
+						}
+						hidden_tooltip = {	
+							remove_trait = widowed
+							if = {
+								limit = { trait = forbid_marriage }
+								remove_trait = forbid_marriage
+							}
+						}
+						add_spouse_matrilineal = ROOT
+					}	
+				}
+			}
+		}
+		any_realm_lord = {
+			limit = {
+				culture_group = ghiscari_group
+				OR = {
+					is_patrician = yes
+					higher_tier_than = BARON
+				}
+			}
+			opinion = {
+				who = ROOT
+				modifier = opinion_happy
+				years = 5
+				multiplier = 2
+			}
+		}
+		prestige = 200
+		wealth = 250
+		hidden_tooltip = { narrative_event = { id = feast_for_crows.55 days = 20 } }
+	}
+	
+	option = {
+		name = "EVTOPTBfeast_for_crows.54" #Quentyn
+		ai_chance = { factor = 10 }
+		trigger = { any_courtier = { character = 5001 } }
+		random_courtier = {
+			limit = { character = 5001 }
+			hidden_tooltip = { 
+				remove_trait = wikid 
+				remove_trait = forbid_marriage
+			}
+			add_spouse_matrilineal = ROOT
+		}
+		clr_character_flag = dany_no_tame_dragon
+		hidden_tooltip = { 
+			fertility = 0.4
+			c_yronwood = {
+				holder_scope = {
+					random_dynasty_member = {
+						limit = { character = 2012 }
+						remove_trait = wikid
+					}
+				}
+			}
+			c_vulturesroost = {
+				holder_scope = {
+					random_dynasty_member = {
+						limit = { character = 1003 }
+						remove_trait = wikid
+					}
+				}
+			}
+		}
+	}
+}
+#Yunkai 'peace' , Dany encounters Drogon in fighting pit
+narrative_event = {
+	id = feast_for_crows.55
+	desc = "EVTDESCfeast_for_crows.55"
+	title = "EVTTITLEfeast_for_crows.55"
+	picture = "GFX_tamingdragon"
+	
+	is_triggered_only = yes
+	
+	trigger = { character = 77041 }
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.55" 
+		prestige = 200
+		add_trait = dragon_rider
+		add_trait = has_missing
+		clr_character_flag = dany_no_tame_dragon
+		hidden_tooltip = { 
+			narrative_event = { id = feast_for_crows.56 days = 20 random = 5 } 
+			random_friend = {
+				limit = { trait = dragon }
+				change_martial = 2
+			}		
+		}
+	}
+}
+#Acquire dragon and khalasar,  divorce meereenese idiot, Quentyn Dies
+narrative_event = {
+	id = feast_for_crows.56
+	desc = "EVTDESCfeast_for_crows.56"
+	title = "EVTTITLEfeast_for_crows.56"
+	picture = GFX_evt_dany_and_drogon
+	
+	is_triggered_only = yes
+	
+	trigger = { character = 77041 }
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.56" 
+		fertility = 0.7
+		hidden_tooltip = { narrative_event = { id = feast_for_crows.5600 days = 40 random = 10 } }
+	}
+}
+narrative_event = {
+	id = feast_for_crows.5600
+	desc = "EVTDESCfeast_for_crows.5600"
+	title = "EVTTITLEfeast_for_crows.5600"
+	picture = GFX_evt_dany_and_drogon
+	
+	is_triggered_only = yes
+	
+	trigger = { character = 77041 }
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.5600" 
+		remove_trait = has_missing
+		hidden_tooltip = { 
+			narrative_event = { id = feast_for_crows.5601 days = 3 } 
+			random_friend = {
+				limit = { trait = dragon }
+				change_martial = 2
+			}	
+		}
+		#Kill Jhaqo and Mago
+		random_independent_ruler = {
+			limit = { 
+				character = 3300102 
+				ai = yes
+			}
+			random_courtier = {
+				limit = { character = 3300103 }
+				death = {
+					death_reason = death_execution
+					killer = ROOT
+				}
+			}
+			hidden_tooltip = { character_event = { id = dothraki.101 } } #Remove his Khalasar from the map
+			death = {
+				death_reason = death_execution
+				killer = ROOT
+			}
+		}
+		699 = {
+			ROOT = {
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					leader = ROOT
+					troops = {
+						horse_archers= { 2000 2000 }
+						light_cavalry = { 2000 2000 }
+					}
+					attrition = 1.0
+				}
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						horse_archers= { 2000 2000 }
+						light_cavalry = { 2000 2000 }
+					}
+					attrition = 1.0
+				}
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						horse_archers= { 2000 2000 }
+						light_cavalry = { 2000 2000 }
+					}
+					attrition = 1.0
+				}
+			}	
+		}	
+	}
+}
+narrative_event = {
+	id = feast_for_crows.5601
+	desc = "EVTDESCfeast_for_crows.5601"
+	title = "EVTTITLEfeast_for_crows.5601"
+	picture = GFX_evt_battle
+	
+	is_triggered_only = yes
+	
+	trigger = { character = 77041 }
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.5601" 
+		spouse = {
+			imprison = ROOT 
+			reverse_opinion = { who = ROOT modifier = attempted_murder years = 10 }
+		}
+		remove_spouse = spouse
+		random_courtier = {
+			limit = { character = 5001 }
+			hidden_tooltip = { add_trait = fed_to_dragon }
+			death = { death_reason = death_trait }
+		}
+		hidden_tooltip = {
+			c_yronwood = {
+				holder_scope = {
+					random_dynasty_member = {
+						limit = { character = 2012 }
+						remove_trait = wikid
+					}
+				}
+			}
+			c_vulturesroost = {
+				holder_scope = {
+					random_dynasty_member = {
+						limit = { character = 1003 }
+						remove_trait = wikid
+					}
+				}
+			}
+		}
+	}
+}
+#Yunkai Defeated, Liberate/Emancipate other slaver cities/nations, Tyrion/Jorah show up
+narrative_event = {
+	id = feast_for_crows.57
+	desc = "EVTDESCfeast_for_crows.57"
+	title = "EVTTITLEfeast_for_crows.57"
+	picture = GFX_evt_drogon
+	
+	only_rulers = yes
+	only_women = yes
+	has_character_flag = dany_liberation_quest
+	
+	trigger = {
+		character = 77041
+		NOT = {
+			any_war = {
+				OR = {
+					using_cb = war_of_emancipation
+					using_cb = war_of_liberation
+				}
+				defender = {
+					OR = {
+						has_landed_title = k_yunkai
+						has_landed_title = k_new_ghis
+						has_landed_title = k_volantis
+						has_landed_title = k_tyrosh
+						has_landed_title = k_lys
+						has_landed_title = k_myr
+					}
+				}
+			}
+		}
+		OR = {
+			k_yunkai = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+			k_new_ghis = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+			k_volantis = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+			k_tyrosh = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+			k_lys = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+			k_myr = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+			k_north_valyria = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+		}	
+	}
+	
+	immediate = {
+		hidden_tooltip = {
+			if = { #If AFFC scenario trigger Tyrion and Victarion Event
+				limit = { has_character_flag = affc_scenario }			
+				if = {
+					limit = { NOT = { has_character_flag = tyrion_event } }
+					narrative_event = { id = feast_for_crows.60 days = 40 random = 15 }
+				}
+			}
+			if = {
+				limit = { NOT = { has_character_flag = victarion_event } }
+				narrative_event = { id = feast_for_crows.59 days = 40 random = 15 }
+			}			
+		}
+		clr_character_flag = enslavement_of_meereen
+		if = {
+			limit = { has_character_flag = liberate_yunkai }
+			clr_character_flag = liberate_yunkai
+			k_yunkai = {
+				usurp_title = { target = ROOT type = invasion }
+				ROOT = { set_character_flag = flag_slavery_treaty_breach }
+				add_law = slavery_0
+				add_law = treaty_breach_1
+			}
+			d_yunkai = { usurp_title = { target = ROOT type = invasion } }
+			c_yunkai = { usurp_title = { target = ROOT type = invasion } }
+			k_astapor = {
+				usurp_title = { target = ROOT type = invasion }
+				ROOT = { set_character_flag = flag_slavery_treaty_breach }
+				add_law = slavery_0
+				add_law = treaty_breach_1
+			}
+			d_astapor = { usurp_title = { target = ROOT type = invasion } }
+			c_astapor = { usurp_title = { target = ROOT type = invasion } }
+			if = {
+				limit = {
+					FROMFROM = { is_liege_or_above = ROOT }
+				}
+				FROMFROM = { imprison = ROOT }
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.57" #Yunkai
+		ai_chance = { factor = 50000 }
+		trigger = {
+			k_yunkai = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+		}
+		k_yunkai = {
+			reverse_war = {
+				target = ROOT
+				casus_belli = war_of_liberation
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTFfeast_for_crows.57" #North Valyria
+		ai_chance = { factor = 2000 }
+		trigger = {
+			k_north_valyria = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+		}
+		k_north_valyria = {
+			if = {
+				limit = { NOT = { has_law = treaty_breach_0 } }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_emancipation
+				}
+			}	
+			if = {
+				limit = { has_law = treaty_breach_0 }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_liberation
+				}
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTBfeast_for_crows.57" #New Ghis
+		ai_chance = { factor = 2000 }
+		trigger = {
+			k_new_ghis = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+		}
+		k_new_ghis = {
+			if = {
+				limit = { NOT = { has_law = treaty_breach_0 } }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_emancipation
+				}
+			}	
+			if = {
+				limit = { has_law = treaty_breach_0 }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_liberation
+				}
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTCfeast_for_crows.57" #Volantis
+		ai_chance = { factor = 50 }
+		trigger = {
+			k_volantis = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+		}
+		k_volantis = {
+			if = {
+				limit = { NOT = { has_law = treaty_breach_0 } }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_emancipation
+				}
+			}	
+			if = {
+				limit = { has_law = treaty_breach_0 }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_liberation
+				}
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTDfeast_for_crows.57" #Lys/Tyrosh
+		ai_chance = { factor = 1 }
+		trigger = {
+			OR = {
+				k_lys = {
+					has_holder = yes
+					has_law = slavery_2
+					holder_scope = {
+						NOT = { character = ROOT }
+						independent = yes
+					}
+				}
+				k_tyrosh = {
+					has_holder = yes
+					has_law = slavery_2
+					holder_scope = {
+						NOT = { character = ROOT }
+						independent = yes
+					}
+				}
+			}	
+		}
+		k_lys = {
+			if = {
+				limit = { NOT = { has_law = treaty_breach_0 } }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_emancipation
+				}
+			}	
+			if = {
+				limit = { has_law = treaty_breach_0 }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_liberation
+				}
+			}
+		}
+		k_tyrosh = {
+			if = {
+				limit = { NOT = { has_law = treaty_breach_0 } }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_emancipation
+				}
+			}	
+			if = {
+				limit = { has_law = treaty_breach_0 }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_liberation
+				}
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTEfeast_for_crows.57" #Myr
+		ai_chance = { factor = 1 }
+		trigger = {
+			k_myr = {
+				has_holder = yes
+				has_law = slavery_2
+				holder_scope = {
+					NOT = { character = ROOT }
+					independent = yes
+				}
+			}
+		}
+		k_myr = {
+			if = {
+				limit = { NOT = { has_law = treaty_breach_0 } }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_emancipation
+				}
+			}	
+			if = {
+				limit = { has_law = treaty_breach_0 }
+				reverse_war = {
+					target = ROOT
+					casus_belli = war_of_liberation
+				}
+			}
+		}
+	}
+}
+#Liberation Done, Westeros?
+narrative_event = {
+	id = feast_for_crows.58
+	desc = "EVTDESCfeast_for_crows.58"
+	title = "EVTTITLEfeast_for_crows.58"
+	picture = GFX_evt_drogon
+	
+	only_rulers = yes
+	only_women = yes
+	has_character_flag = dany_liberation_quest
+	
+	trigger = { 
+		character = 77041 	
+		NOT = {
+			OR = {
+				k_yunkai = {
+					has_holder = yes
+					has_law = slavery_2
+					holder_scope = {
+						NOT = { character = ROOT }
+						independent = yes
+					}
+				}
+				k_new_ghis = {
+					has_holder = yes
+					has_law = slavery_2
+					holder_scope = {
+						NOT = { character = ROOT }
+						independent = yes
+					}
+				}
+				k_volantis = {
+					has_holder = yes
+					has_law = slavery_2
+					holder_scope = {
+						NOT = { character = ROOT }
+						independent = yes
+					}
+				}
+				k_tyrosh = {
+					has_holder = yes
+					has_law = slavery_2
+					holder_scope = {
+						NOT = { character = ROOT }
+						independent = yes
+					}
+				}
+				k_lys = {
+					has_holder = yes
+					has_law = slavery_2
+					holder_scope = {
+						NOT = { character = ROOT }
+						independent = yes
+					}
+				}
+				k_myr = {
+					has_holder = yes
+					has_law = slavery_2
+					holder_scope = {
+						NOT = { character = ROOT }
+						independent = yes
+					}
+				}
+				k_north_valyria = {
+					has_holder = yes
+					has_law = slavery_2
+					holder_scope = {
+						NOT = { character = ROOT }
+						independent = yes
+					}
+				}
+			}	
+		}	
+	}
+	
+	immediate = { 
+		clr_character_flag = dany_liberation_quest 
+		clr_character_flag = danys_eastern_quest
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.58" #Yes!
+		trigger = { NOT = { e_iron_throne = { holder_scope = { is_married = ROOT } } } }
+		set_character_flag = war_for_iron_throne
+		e_iron_throne = {
+			reverse_war = {
+				target = ROOT
+				casus_belli = claim_iron_throne_ACOK
+			}
+			holder_scope = { #Possible Aegon Alliance
+				if = {
+					limit = { character = 125009 }
+					hidden_tooltip = { character_event = { id = invasions.100 } }
+				}
+				if = {
+					limit = { NOT = { character = 125009 } }
+					hidden_tooltip = { c_rainwood = { holder_scope = { character_event = { id = invasions.100 } } } }
+				}
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTBfeast_for_crows.58" #No
+		trigger = { NOT = { e_iron_throne = { holder_scope = { is_married = ROOT } } } }
+		remove_claim = e_iron_throne
+		e_ghiscar = { 
+			gain_title = ROOT 
+			copy_title_laws = k_meereen
+		}
+		set_character_flag = no_iron_throne_claim
+		clr_character_flag = dany_no_tame_dragon
+		clr_character_flag = liberation_of_meereen
+		clr_character_flag = emancipation_of_yunkai
+		clr_character_flag = danys_eastern_quest
+		hidden_tooltip = {
+			any_independent_ruler = {
+				limit = {
+					NOT = { character = ROOT }
+					OR = {
+						has_landed_title = k_yunkai
+						has_landed_title = k_astapor
+						has_landed_title = k_new_ghis
+						has_landed_title = k_north_valyria
+						has_landed_title = d_mantarys
+						has_landed_title = d_tolos
+						has_landed_title = d_elyria
+					}
+					primary_title = { 
+						OR = {
+							has_law = slavery_1
+							dejure_liege_title = {
+								has_holder = no
+								title = k_north_valyria
+							}
+						}
+					}
+				}
+				set_defacto_liege = ROOT
+				character_event = { id = feast_for_crows.580 }
+			}
+			activate_title = { status = no title = k_great_grass_sea }
+			k_great_grass_sea = { destroy_landed_title = ROOT }
+			activate_title = { status = no title = d_great_grass_sea }
+			d_great_grass_sea = { destroy_landed_title = ROOT }	
+			remove_claim = d_kings_landing
+			remove_claim = c_kings_landing
+		}	
+	}
+	
+	option = {
+		name = "EVTOPTCfeast_for_crows.58" #My husband holds the iron throne
+		trigger = { e_iron_throne = { holder_scope = { is_married = ROOT } } } 
+		e_ghiscar = { 
+			gain_title = ROOT 
+			copy_title_laws = k_meereen
+		}
+		clr_character_flag = dany_no_tame_dragon
+		clr_character_flag = liberation_of_meereen
+		clr_character_flag = emancipation_of_yunkai
+		clr_character_flag = danys_eastern_quest
+		hidden_tooltip = {
+			any_independent_ruler = {
+				limit = {
+					NOT = { character = ROOT }
+					OR = {
+						has_landed_title = k_yunkai
+						has_landed_title = k_astapor
+						has_landed_title = k_new_ghis
+						has_landed_title = k_north_valyria
+						has_landed_title = d_mantarys
+						has_landed_title = d_tolos
+						has_landed_title = d_elyria
+					}
+					primary_title = { 
+						OR = {
+							has_law = slavery_1
+							dejure_liege_title = {
+								has_holder = no
+								title = k_north_valyria
+							}
+						}
+					}
+				}
+				set_defacto_liege = ROOT
+				character_event = { id = feast_for_crows.580 }
+			}
+			activate_title = { status = no title = k_great_grass_sea }
+			k_great_grass_sea = { destroy_landed_title = ROOT }
+			activate_title = { status = no title = d_great_grass_sea }
+			d_great_grass_sea = { destroy_landed_title = ROOT }		
+		}	
+	}
+}
+character_event = {
+	id = feast_for_crows.580
+	desc = "EVTDESCfeast_for_crows.580"
+	picture = GFX_evt_drogon
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.580" 
+	}
+}	
+#Victarion rolls in
+narrative_event = {
+	id = feast_for_crows.59
+	desc = "EVTDESCfeast_for_crows.59"
+	title = "EVTTITLEfeast_for_crows.59"
+	picture = GFX_evt_victarion
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		character = 77041 
+		NOT = { has_character_flag = victarion_event }
+		c_pyke = {
+			holder_scope = {
+				any_dynasty_member = {
+					character = 3107
+					is_ruler = no
+					prisoner = no
+					NOT = { trait = incapable }
+					NOT = { trait = nightswatch }
+					OR = {
+						ROOT = { has_character_flag = affc_scenario }
+						e_iron_isles = { holder_scope = { character = 2107 } }
+					}
+				}
+			}
+		}
+		OR = {
+			has_character_flag = viserion
+			has_character_flag = rhaegal
+		}	
+	}
+	
+	immediate = { 
+		set_character_flag = victarion_event
+		c_pyke = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = {
+						character = 3107
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					set_character_flag = mega_war_remove_leader
+				}
+			}
+		}
+		character_event = { id = feast_for_crows.5901 days = 20 random = 15 } #Moqorro conversion?
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.59" #Yes, marry him
+		ai_chance = { factor = 20 }
+		spouse = {
+			opinion = { who = ROOT modifier = opinion_divorced }
+			remove_spouse = spouse
+			any_dynasty_member = {
+				limit = { is_close_relative = ROOT }
+				opinion = { who = ROOT modifier = opinion_divorced_relative }
+			}
+			ROOT = {
+				prestige = -150
+			}
+		}
+		c_pyke = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = { character = 3107 }
+					hidden_tooltip = { 
+						remove_spouse = spouse 
+						remove_trait = widowed
+					}
+					add_spouse_matrilineal = ROOT
+					add_trait = dragon_rider
+					ROOT = {
+						random_child = {
+							limit = {
+								NOT = { any_friend = { is_alive = yes NOT = { character = ROOT } } }
+								NOT = { any_friend = { character = ROOT } } 
+								trait = dragon
+								is_alive = yes
+							}
+							add_friend = PREVPREV
+							#hidden_tooltip = { set_mother = 0 }
+							clr_character_flag = shadow_lands_dragon
+						}
+					}	
+					clr_character_flag = mega_war_remove_leader
+				}
+			}
+		}
+		spawn_fleet = {
+			province = closest # closest sea zone
+			owner = ROOT
+			troops =
+			{
+				galleys = { 300 300 }
+			}
+			earmark = danys_fleet
+		}
+	}
+	option = {
+		name = "EVTOPTBfeast_for_crows.59" #No
+		ai_chance = { factor = 80 }
+		hidden_tooltip = { 
+			random = {
+				chance = 50
+				character_event = { id = feast_for_crows.5900 days = 10 }
+			}
+		}
+		c_pyke = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = { character = 3107 }
+					clr_character_flag = mega_war_remove_leader
+				}
+			}
+		}
+	}
+}
+#Victarion pinches dragon
+character_event = {
+	id = feast_for_crows.5900
+	desc = "EVTDESCfeast_for_crows.5900"
+	picture = GFX_evt_victarion
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		character = 77041 
+		c_pyke = {
+			holder_scope = {
+				any_dynasty_member = {
+					character = 3107
+					is_ruler = no
+					prisoner = no
+					NOT = { trait = incapable }
+				}
+			}
+		}
+		OR = {
+			has_character_flag = viserion
+			has_character_flag = rhaegal
+		}	
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.5900" 
+		c_pyke = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = {
+						character = 3107
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					add_trait = dragon_rider
+					ROOT = {
+						random_child = {
+							limit = {
+								NOT = { any_friend = { is_alive = yes NOT = { character = ROOT } } }
+								NOT = { any_friend = { character = ROOT } } 
+								trait = dragon
+								is_alive = yes
+							}
+							add_friend = PREVPREV
+							#hidden_tooltip = { set_mother = 0 }
+							clr_character_flag = shadow_lands_dragon
+							move_character = PREVPREVPREV
+						}
+					}	
+					reverse_opinion = { who = ROOT modifier = opinion_vengeance }
+				}
+			}
+		}
+	}
+}
+#Moqorro offers conversion
+character_event = {
+	id = feast_for_crows.5901
+	desc = "EVTDESCfeast_for_crows.5901"
+	picture = GFX_evt_moqorro
+	
+	is_triggered_only = yes
+
+	trigger = {
+		character = 77041 
+		has_character_flag = victarion_event
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.5901" #YES
+		ai_chance = { factor = 50 }
+		religion = rhllor
+		add_trait = chosen_by_rhllor
+		d_rhllor = {
+			holder_scope = { 
+				opinion = {
+					modifier = opinion_the_chosen_one
+					who = ROOT
+				}
+				random_courtier = {
+					limit = {
+						character = 600000057 # Moqorro
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					move_character = ROOT
+				}
+			}	
+		}
+	}
+	
+	option = {
+		name = "EVTOPTBfeast_for_crows.5901" #NO
+		ai_chance = { factor = 50 }
+	}
+}
+#Tyrion rolls in
+narrative_event = {
+	id = feast_for_crows.60
+	desc = "EVTDESCfeast_for_crows.60"
+	title = "EVTTITLEfeast_for_crows.60"
+	picture = GFX_evt_tyrion
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		character = 77041 
+		NOT = { has_character_flag = tyrion_event }
+		c_casterly_rock = {
+			holder_scope = {
+				any_dynasty_member = {
+					character = 5190
+					is_ruler = no
+					prisoner = no
+					NOT = { trait = incapable }
+				}
+			}
+		}
+	}
+	
+	immediate = { 
+		set_character_flag = tyrion_event
+		c_casterly_rock = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = {
+						character = 5190
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					add_trait = former_slave
+				}
+			}
+		}	
+		c_bearisland = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = {
+						character = 102
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					add_trait = former_slave
+					add_trait = scarred
+					if = { #
+						limit = { NOT = { father_even_if_dead = { always = yes } } }
+						real_father = { ROOT = { set_father = PREV } }
+					}
+				}
+			}
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.60"
+		ai_chance = { factor = 50 }		
+		c_casterly_rock = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = {
+						character = 5190
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					move_character = ROOT
+				}
+			}
+		}	
+		c_bearisland = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = {
+						character = 102
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					move_character = ROOT
+				}
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTBfeast_for_crows.60" 
+		ai_chance = { factor = 30 }	
+		c_casterly_rock = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = {
+						character = 5190
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					move_character = ROOT
+					imprison = ROOT
+				}
+			}
+		}	
+		c_bearisland = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = {
+						character = 102
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					move_character = ROOT
+				}
+			}
+		}
+	}
+	option = {
+		name = "EVTOPTCfeast_for_crows.60" 
+		ai_chance = { factor = 10 }	
+		c_casterly_rock = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = {
+						character = 5190
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					move_character = ROOT
+					death = {
+						death_reason = death_execution
+						killer = ROOT
+					}
+				}
+			}
+		}	
+		c_bearisland = {
+			holder_scope = {
+				random_dynasty_member = {
+					limit = {
+						character = 102
+						is_ruler = no
+						prisoner = no
+						NOT = { trait = incapable }
+					}
+					move_character = ROOT
+				}
+			}
+		}
+	}
+}
+#Meereen to Pentos Tangent- Alliance with Young Griff/Pentos
+narrative_event = {
+	id = feast_for_crows.61
+	desc = "EVTDESCfeast_for_crows.61"
+	title = "EVTTITLEclash_of_kings.59"
+	picture = "GFX_evt_young_griff"
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		character = 77041
+		is_married = no
+		OR = {
+			e_iron_throne = {
+				holder_scope = {
+					any_current_enemy = {
+						character = 125009 
+						OR = {
+							is_married = no
+							ai = yes
+						}
+					}
+				}
+			}
+			c_rain_house = {
+				holder_scope = {
+					character = 125009 
+					OR = {
+						is_married = no
+						ai = yes
+					}
+					any_current_enemy = {
+						has_landed_title = k_stormlands
+						NOT = { has_landed_title = e_iron_throne }
+					}
+				}
+			}
+		}	
+	}
+	
+	immediate = {
+		clr_character_flag = dany_no_tame_dragon
+		clr_character_flag = danys_eastern_quest
+		b_sunrisegate = { gain_title = ROOT }	
+		hidden_tooltip = {
+			fertility = 0.2
+			spawn_fleet = {
+				province = closest # closest sea zone
+				owner = ROOT
+				troops =
+				{
+					galleys = { 150 150 }
+				}
+				earmark = danys_fleet
+			}			
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAclash_of_kings.59" #Accept
+		e_iron_throne = {
+			holder_scope = {
+				random_current_enemy = {
+					limit = {
+						character = 125009 
+						OR = {
+							is_married = no
+							ai = yes
+						}
+					}			
+					tooltip = {
+						add_spouse = ROOT
+						custom_tooltip = { text = TOOLTIPAEGONSHERITAGE }
+						ROOT = {
+							random_child = {
+								limit = {
+									NOT = { any_friend = { is_alive = yes } }
+									trait = dragon
+									is_alive = yes
+								}
+								add_friend = PREVPREV
+								clr_character_flag = shadow_lands_dragon
+								move_character = PREVPREV
+							}
+						}
+						b_mopatis = { holder_scope = { join_attacker_wars = PREVPREV } }
+						ROOT = { join_attacker_wars = PREV }
+					}
+					hidden_tooltip = { character_event = { id = feast_for_crows.63 } }										
+				}
+			}
+		}
+		c_rain_house = {
+			holder_scope = {
+				if = {
+					limit = {
+						character = 125009 
+						OR = {
+							is_married = no
+							ai = yes
+						}
+						any_current_enemy = {
+							has_landed_title = k_stormlands
+							NOT = { has_landed_title = e_iron_throne }
+						}
+					}
+					tooltip = {
+						add_spouse = ROOT
+						custom_tooltip = { text = TOOLTIPAEGONSHERITAGE }
+						ROOT = {
+							random_child = {
+								limit = {
+									NOT = { any_friend = { is_alive = yes } }
+									trait = dragon
+									is_alive = yes
+								}
+								add_friend = PREVPREV
+								clr_character_flag = shadow_lands_dragon
+								move_character = PREVPREV
+							}
+						}
+						b_mopatis = { holder_scope = { join_attacker_wars = PREVPREV } }
+						ROOT = { join_attacker_wars = PREV }
+					}
+					hidden_tooltip = { character_event = { id = feast_for_crows.63 } }	
+				}	
+			}
+		}
+		406 = {
+			ROOT = {
+				if = {
+					limit = { any_courtier = { character = 201302 is_alive = yes } }
+					spawn_unit = {
+						province = PREV
+						home = PREV
+						owner = ROOT
+						leader = 201302
+						troops = {
+							light_infantry = { 1333 1333 }
+							archers = { 200 200 }
+							heavy_infantry = { 133 133 }
+						}
+						attrition = 1.0
+					}
+				}
+				if = {
+					limit = { NOT = { any_courtier = { character = 201302 is_alive = yes } } }
+					spawn_unit = {
+						province = PREV
+						home = PREV
+						owner = ROOT
+						troops = {
+							light_infantry = { 1333 1333 }
+							archers = { 200 200 }
+							heavy_infantry = { 133 133 }
+						}
+						attrition = 1.0
+					}
+				}					
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						light_infantry = { 1333 1333 }
+						archers = { 200 200 }
+						heavy_infantry = { 133 133 }
+					}
+					attrition = 1.0
+				}
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						light_infantry = { 1333 1333 }
+						archers = { 200 200 }
+						heavy_infantry = { 133 133 }
+					}
+					attrition = 1.0
+				}
+			}	
+		}
+	}	
+	option = {
+		name = "EVTOPTBclash_of_kings.61" #Reject
+		set_character_flag = war_for_iron_throne
+		e_iron_throne = {
+			reverse_war = {
+				target = ROOT
+				casus_belli = claim_iron_throne_ACOK
+			}
+		}
+		406 = {
+			ROOT = {
+				if = {
+					limit = { any_courtier = { character = 201302 is_alive = yes } }
+					spawn_unit = {
+						province = PREV
+						home = PREV
+						owner = ROOT
+						leader = 201302
+						troops = {
+							light_infantry = { 1333 1333 }
+							archers = { 200 200 }
+							heavy_infantry = { 133 133 }
+						}
+						attrition = 1.0
+					}
+				}
+				if = {
+					limit = { NOT = { any_courtier = { character = 201302 is_alive = yes } } }
+					spawn_unit = {
+						province = PREV
+						home = PREV
+						owner = ROOT
+						troops = {
+							light_infantry = { 1333 1333 }
+							archers = { 200 200 }
+							heavy_infantry = { 133 133 }
+						}
+						attrition = 1.0
+					}
+				}
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						light_infantry = { 1333 1333 }
+						archers = { 200 200 }
+						heavy_infantry = { 133 133 }
+					}
+					attrition = 1.0
+				}
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						light_infantry = { 1333 1333 }
+						archers = { 200 200 }
+						heavy_infantry = { 133 133 }
+					}
+					attrition = 1.0
+				}
+			}	
+		}
+	}
+}
+#Meereen to Pentos Tangent- Invade Westeros
+character_event = {
+	id = feast_for_crows.62
+	desc = "EVTDESCfeast_for_crows.62"
+	picture = "GFX_evt_drogon"
+	
+	is_triggered_only = yes
+	
+	trigger = {
+		character = 77041
+		OR = {
+			is_married = yes
+			NOT = {
+				OR = {
+					e_iron_throne = {
+						holder_scope = {
+							any_current_enemy = {
+								character = 125009 
+								OR = {
+									is_married = no
+									ai = yes
+								}
+							}
+						}
+					}
+					c_rain_house = {
+						holder_scope = {
+							character = 125009 
+							OR = {
+								is_married = no
+								ai = yes
+							}
+							any_current_enemy = {
+								has_landed_title = k_stormlands
+								NOT = { has_landed_title = e_iron_throne }
+							}
+						}
+					}
+				}	
+			}	
+		}		
+	}
+	
+	immediate = {
+		clr_character_flag = dany_no_tame_dragon
+		clr_character_flag = danys_eastern_quest
+		b_sunrisegate = { gain_title = ROOT }	
+		hidden_tooltip = {
+			fertility = 0.2
+			spawn_fleet = {
+				province = closest # closest sea zone
+				owner = ROOT
+				troops =
+				{
+					galleys = { 150 150 }
+				}
+				earmark = danys_fleet
+			}			
+		}
+	}
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.62"
+		set_character_flag = war_for_iron_throne
+		e_iron_throne = {
+			reverse_war = {
+				target = ROOT
+				casus_belli = claim_iron_throne_ACOK
+			}
+			holder_scope = {
+				if = {
+					limit = { character = 125009 }
+					hidden_tooltip = { character_event = { id = invasions.100 } }
+				}
+			}
+		}
+		406 = {
+			ROOT = {
+				if = {
+					limit = { any_courtier = { character = 201302 is_alive = yes } }
+					spawn_unit = {
+						province = PREV
+						home = PREV
+						owner = ROOT
+						leader = 201302
+						troops = {
+							light_infantry = { 1333 1333 }
+							archers = { 200 200 }
+							heavy_infantry = { 133 133 }
+						}
+						attrition = 1.0
+					}
+				}
+				if = {
+					limit = { NOT = { any_courtier = { character = 201302 is_alive = yes } } }
+					spawn_unit = {
+						province = PREV
+						home = PREV
+						owner = ROOT
+						troops = {
+							light_infantry = { 1333 1333 }
+							archers = { 200 200 }
+							heavy_infantry = { 133 133 }
+						}
+						attrition = 1.0
+					}
+				}					
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						light_infantry = { 1333 1333 }
+						archers = { 200 200 }
+						heavy_infantry = { 133 133 }
+					}
+					attrition = 1.0
+				}
+				spawn_unit = {
+					province = PREV
+					home = PREV
+					owner = ROOT
+					troops = {
+						light_infantry = { 1333 1333 }
+						archers = { 200 200 }
+						heavy_infantry = { 133 133 }
+					}
+					attrition = 1.0
+				}
+			}	
+		}
+	}
+}
+#Inform Young Griff Dany joins war
+character_event = {
+	id = feast_for_crows.63
+	desc = "EVTDESCfeast_for_crows.63"
+	picture = "GFX_evt_dany_and_drogon"
+	
+	is_triggered_only = yes
+	
+	option = {
+		name = "EVTOPTAfeast_for_crows.62" #Accept
+		hidden_tooltip = { remove_spouse = spouse }
+		if = {
+			limit = { trait = forbid_marriage }
+			remove_trait = forbid_marriage
+		}
+		add_spouse = FROM
+		custom_tooltip = { text = TOOLTIPAEGONSHERITAGE }
+		FROM = {
+			random_child = {
+				limit = {
+					NOT = { any_friend = { is_alive = yes } }
+					trait = dragon
+					is_alive = yes
+				}
+				add_friend = ROOT
+				clr_character_flag = shadow_lands_dragon
+				move_character = ROOT
+			}
+		}	
+		hidden_tooltip = {
+			character_event = { id = invasions.105 } #Set young griff's targaryen ancestry
+		}
+		FROM = { 
+			join_attacker_wars = ROOT
+			hidden_tooltip = { primary_title = { set_variable = { which = "de_facto_empire" value = 1 } } }
+		}	
+		b_mopatis = { holder_scope = { join_attacker_wars = ROOT } }
+		e_iron_throne = {
+			reverse_war = {
+				target = ROOT
+				casus_belli = claim_iron_throne_ACOK
+			}	
+		}	
+	}	
+}
+
+######  Stannis wins Iron Throne, declare War for the Dawn
+character_event = {
+	id = feast_for_crows.600
+	desc = "EVTDESCfeast_for_crows.600"
+	picture = GFX_evt_mannis
+	
+	is_triggered_only = yes
+
+	trigger = {
+		character = 4317 #Stannis
+		has_landed_title = e_iron_throne
+		has_character_flag = stannis_affc
+		has_global_flag = cold_winds
+	}
+		
+	option = {
+		name = "EVTOPTAfeast_for_crows.600" #YES
+		d_winter = {
+			reverse_war = {
+				target = ROOT
+				casus_belli = war_dawn
+			}
+		}
+	}	
+}
+
+
