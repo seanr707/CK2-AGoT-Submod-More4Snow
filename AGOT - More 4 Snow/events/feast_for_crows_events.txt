@@ -229,7 +229,6 @@ character_event = {
 					}
 				}
 				character_event = { id = feast_for_crows.5 days = 5 }
-                character_event = { id = feast_for_crows.299 days = 7}
 			}
 			if = {
 				limit = {
@@ -542,6 +541,13 @@ character_event = {
     
     option = {
         name = "EVTOPTAfeast_for_crows.299" #Lords donate troops
+        k_stormlands = { # Fixes giant stack that wipes your troops
+            holder_scope = {
+                ROOT = {
+                    join_attacker_wars = PREV
+                }
+            }
+        }
         spawn_unit = {
             province = 17 #Castle Black
             home = 17 #Castle Black
@@ -678,6 +684,14 @@ character_event = {
 				clr_character_flag = val_wildling
 			}
 		}
+        #if = {
+        #    limit = { 
+        #        9266059 = {
+        #            has_character_flag = betrothed_to_little_finger
+        #        }
+        #    }
+        #    character_event = { id = feast_for_crows.298 days = 14 }
+        #}
 	}
 ## Added by seanr707
     option = {
@@ -696,11 +710,116 @@ character_event = {
                 prisoner = no
                 remove_spouse = 205081092
                 add_spouse = ROOT 
-                remove_character_modifier = house_arrest
+                remove_character_modifier = {
+                    house_arrest
+                }
+                fertility = 1000 # Fixes her low fertility
+
+                #Gives her strong claims
+                hidden_tooltip = { 
+                    e_iron_islands = {
+                        add_pressed_claim = PREV
+                    }
+                    k_iron_islands = {
+                        add_pressed_claim = PREV
+                    }
+                    d_pyke = {
+                        add_pressed_claim = PREV
+                    }
+                    c_pyke = {
+                        add_pressed_claim = PREV
+                    }
+                }
             }
         }
     }
 }	
+
+## Added by seanr707
+character_event = { # Jon chooses to marry 'Alayne' or not
+    id = feast_for_crows.298
+    desc = "EVTDESCfeast_for_crows.298"
+    picture = GFX_STARK
+
+    is_triggered_only = yes
+    
+    trigger = {
+        ROOT = {
+            is_married = no
+            has_landed_title = d_deep_lake
+        }
+    }
+    
+    option = {
+        name = "EVTOPTAfeast_for_crows.298" #Yes
+        ai_chance = { factor = 10 }
+        if = {
+            limit = { ai = yes }
+            remove_trait = forbid_marriage
+        }
+        set_character_flag = keep_lowborn_marriage
+        FROM = {
+            random_courtier = {
+                limit = {
+                    character = 9266059 # Sansa
+                }
+                add_spouse = ROOT
+            }
+            character_event = { id = feast_for_crows.210 days = 3 } # Littlefinger will join the war
+        }
+        character_event = { id = feast_for_crows.222 days = 3 } # Jon will realize its Sansa
+    }
+
+    option = {
+        name = "EVTOPTBfeast_for_crows.298" # No
+        ai_chance = { factor = 90 }
+
+        FROM = {
+            character_event = { id = feast_for_crows.21 } # Littlefinger chooses again
+        }
+    }
+}   
+
+## Added by seanr707
+character_event = { # Jon finds out Alayne is Sansa
+    id = feast_for_crows.222
+    desc = "EVTDESCfeast_for_crows.222"
+    picture = GFX_STARK
+
+    is_triggered_only = yes
+    
+    #trigger = {
+    #}
+    
+    option = {
+        name = "EVTOPTAfeast_for_crows.222" # She's my sister!
+        ai_chance = { factor = 99 }
+        any_realm_character = {
+            limit = {
+                character = 9266059 # Sansa
+            }
+            remove_spouse = ROOT  
+            character_event = { id = feast_for_crows.26 }
+            ROOT = {
+                reverse_banish = PREV # Moves Sansa back to Jon after divorce and reveal
+            }
+        } 
+    }  
+    
+    option = {
+        name = "EVTOPTBfeast_for_crows.222" # F*** it
+        ai_chance = { factor = 1 }
+        any_realm_character = {
+            limit = {
+                character = 9266059 # Sansa
+            } 
+            character_event = { id = feast_for_crows.26 }
+        }
+        add_trait = lunatic # Gotta be kinda crazy to have sex with your sister
+    }
+
+}
+
 #Jon swap babies?
 character_event = {
 	id = feast_for_crows.202
@@ -2070,7 +2189,90 @@ character_event = {
 		ai_chance = { factor = 0 }
 		hidden_tooltip = { remove_trait = forbid_marriage }
 	}
+    ## Added by seanr707
+    option = { #Offer her to Jon
+        name = EVTOPTDfeast_for_crows.21
+        ai_chance = { factor = 0 }
+        hidden_tooltip = { remove_trait = forbid_marriage }
+
+        d_deep_lake = {
+            holder_scope = {
+                character_event = { id =  feast_for_crows.298 days = 14}
+            }
+        }
+
+        d_nightswatch = {
+            holder_scope = {
+                character_event = { id =  feast_for_crows.298 days = 14}
+            }
+        }
+    }
+
 }
+
+## Added by sean707
+#Littlefinger joins Jon and Stannis; Little Finger become LP
+character_event = {
+    id = feast_for_crows.210
+    desc = "EVTDESCfeast_for_crows.200"
+    #picture = GFX_STARK
+    
+    is_triggered_only = yes
+    
+    option = {
+        name = OK # Petry joins war for Jon's North
+        k_stormlands = {
+            holder_scope = { 
+                ROOT = {
+                    join_attacker_wars = PREV
+                }
+            }
+        }
+        clr_character_flag = neutral
+        clr_character_flag = supporting_king
+        set_character_flag = against_king
+        k_north = {
+            holder_scope = { 
+                opinion = {
+                    modifier = opinion_traitor
+                    who = ROOT
+                }
+                hidden_tooltip = { character_event = { id = mega_wars.36 } }
+            }
+        }
+        e_iron_throne = {
+            holder_scope = { 
+                opinion = {
+                    modifier = opinion_joined_rebellion
+                    who = ROOT
+                    years = 20
+                }
+                opinion = {
+                    modifier = opinion_traitor
+                    who = ROOT
+                }
+            }
+        }   
+        hidden_tooltip = {
+            k_stormlands = {
+                holder_scope = { 
+                    letter_event = { id = mega_wars.31 }
+                    reverse_opinion = {
+                        modifier = opinion_with_rebel_leader
+                        who = ROOT
+                        years = 100
+                    }
+                }
+            }
+        }
+        k_riverlands = { # Give Petyr the Riverlands earlier
+            gain_title = ROOT
+            succession = primogeniture
+        }
+        character_event = { id = feast_for_crows.17 } # Changes Petyr's COA
+    }
+}
+
 #Lady Waynwood receives proposal
 letter_event = {
 	id = feast_for_crows.22
